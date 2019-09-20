@@ -1,14 +1,13 @@
 #pragma once
-#include "GG_Geometry.h"
+#include "GG_Circle.h"
 
 namespace GenerativeGeometry {
 
 class Gear2D : Circle {
 	int numTeeth;
 public:
-	Gear2D(int numTeeth) :numTeeth(numTeeth) {};
+	Gear2D(vec3 center, float radius, int numTeeth) : Circle(center, radius, numTeeth * 2), numTeeth(numTeeth) {};
 protected:
-	virtual void Draw() override {};
 	virtual void MakeTriangles() override {
 		Vertices.push_back(GetCenter());
 		Normals.push_back(vec3{ 1, 0, 0 });
@@ -134,9 +133,8 @@ protected:
 class Gear3D : Gear2D {
 
 public:
-	Gear3D(int numTeeth) : Gear2D(numTeeth) {};
-protected:
-	virtual void Draw() override {};
-}; //What if it was the answer.
+	//Gear3D(int numTeeth) : Gear2D(numTeeth) {};
+
+};  
 
 }

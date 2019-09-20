@@ -5,7 +5,7 @@
 
 #include "../GenerativeGeometry/GG_Math.h"
 #include "../GenerativeGeometry/GG_Geometry.h"
-
+#include "../GenerativeGeometry/GG_Circle.h"
 
 
 TEST(RandRangeInt, ProbablyDoesntProduceBadResults) {
@@ -21,22 +21,25 @@ TEST(Circle, ShouldInitializeToZeros) {
 
 TEST(Circle, ShouldMakeGoodVertices) {
 	auto c = GenerativeGeometry::Circle(GenerativeGeometry::vec3{ 0.0,0.0,0.0 }, 10.0, 16);
-	EXPECT_EQ(c.Vertices[0].x, 0.0);
-	EXPECT_FLOAT_EQ(c.Vertices[1].y, 10.0);
-	auto w = floor(c.Vertices[16].y);
+	c.Draw();
+	EXPECT_EQ(c.GetVertexAt(0).x, 0.0);
+	EXPECT_FLOAT_EQ(c.GetVertexAt(1).y, 10.0);
+	auto w = floor(c.GetVertexAt(16).y);
 	EXPECT_EQ( w, 9);
 	EXPECT_EQ(c.GetCenter().x, 0.0);
 }
 TEST(Circle, ShouldMakeGoodTriangles) {
 	auto c = GenerativeGeometry::Circle(GenerativeGeometry::vec3{ 0.0,0.0,0.0 }, 10.0, 16);
-	EXPECT_EQ(c.Triangles[0],2);
-	EXPECT_EQ(c.Triangles[1],1);
-	EXPECT_EQ(c.Triangles[2],0);
-	EXPECT_EQ(c.Triangles[16*3-2],16);
+	c.Draw();
+	EXPECT_EQ(c.GetTriangleAt(0),2);
+	EXPECT_EQ(c.GetTriangleAt(1),1);
+	EXPECT_EQ(c.GetTriangleAt(2),0);
+	EXPECT_EQ(c.GetTriangleAt(16*3-2),16);
 }
 TEST(Circle, ShouldMakePredictableNormals) {
 	auto c = GenerativeGeometry::Circle(GenerativeGeometry::vec3{ 1.0,9.0,3.0 }, 1320.0, 32);
-	EXPECT_EQ(c.Normals[0].x, 1);
-	EXPECT_EQ(c.Normals[0].y, 0);
-	EXPECT_EQ(c.Normals[0].z, 0);
+	c.Draw();
+	EXPECT_EQ(c.GetNormalAt(0).x, 1);
+	EXPECT_EQ(c.GetNormalAt(0).y, 0);
+	EXPECT_EQ(c.GetNormalAt(0).z, 0);
 }
