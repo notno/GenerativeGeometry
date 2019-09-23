@@ -28,8 +28,8 @@ TEST(Circle, ShouldMakeGoodVertices) {
 	auto circle = GenerativeGeometry::Circle(vec3( 0.0,0.0,0.0 ), 10.0, 16);
 	circle.Draw();
 	EXPECT_EQ(circle.GetVertexAt(0).X, 0.0);
-	EXPECT_FLOAT_EQ(circle.GetVertexAt(1).y, 10.0);
-	auto w = floor(circle.GetVertexAt(16).y);
+	EXPECT_FLOAT_EQ(circle.GetVertexAt(1).Y, 10.0);
+	auto w = floor(circle.GetVertexAt(16).Y);
 	EXPECT_EQ( w, 9);
 	EXPECT_EQ(circle.GetCenter().X, 0.0);
 }
@@ -45,8 +45,8 @@ TEST(Circle, ShouldMakePredictableNormals) {
 	auto circle = GenerativeGeometry::Circle(vec3( 1.0,9.0,3.0 ), 1320.0, 32);
 	circle.Draw();
 	EXPECT_EQ(circle.GetNormalAt(0).X, 1);
-	EXPECT_EQ(circle.GetNormalAt(0).y, 0);
-	EXPECT_EQ(circle.GetNormalAt(0).z, 0);
+	EXPECT_EQ(circle.GetNormalAt(0).Y, 0);
+	EXPECT_EQ(circle.GetNormalAt(0).Z, 0);
 }
 TEST(Circle, ShouldHaveRightNumberOfVerts) {
 	auto circle = GenerativeGeometry::Circle(vec3( 1.0,9.0,3.0 ), 1320.0, 32);

@@ -9,13 +9,13 @@ class Gear2D : public Circle {
 	double GearWidth;
 
 public:
-	Gear2D(vec3 center, double radius, int numTeeth, double width = 30.0) : 
+	Gear2D(V3 center, double radius, int numTeeth, double width = 30.0) : 
 		Circle(center, radius, numTeeth * 2), 
 		NumTeeth(numTeeth), ToothWidthUnit(SetToothWidthUnit(radius)) { };
 
 	void Draw() override { MakeTriangles(); }
 
-	int GetNumTeeth() const { return NumTeeth; };
+	int GetNumTeeth() const { return NumTeeth; }; 
 	double GetToothWidthUnit() const { return ToothWidthUnit; };
 	double GetToothWidth() const {
 		return GetToothWidthUnit() * GetRadius();
@@ -34,8 +34,8 @@ protected:
 		auto radius = GetRadius();
 		auto outerRadius = radius + GetToothWidth();
 
-		Vertices.push_back(GetCenter());
-		Normals.push_back(vec3(1, 0, 0));
+		Vertices.PUSH(GetCenter());
+		Normals.PUSH(V3(1, 0, 0));
 
 		// Iterate through all spokes (NumTeeth*2)
 		for (int i = 1; i <= NumTeeth * 2; i++) {
@@ -44,12 +44,12 @@ protected:
 			double sT = sin(theta);
 
 			// Create vertices for front of gear
-			Vertices.push_back(vec3(0 + center.X, radius * cT, radius * sT));
-			Vertices.push_back(vec3(0 + center.X, outerRadius * cT, outerRadius * sT));
+			Vertices.PUSH(V3(0 + center.X, radius * cT, radius * sT));
+			Vertices.PUSH(V3(0 + center.X, outerRadius * cT, outerRadius * sT));
 			
 			// Create placeholder normals, 1 for each vert
-			Normals.push_back(vec3(1, 0, 0));
-			Normals.push_back(vec3(1, 0, 0));
+			Normals.PUSH(V3(1, 0, 0));
+			Normals.PUSH(V3(1, 0, 0));
 
 			MakeGearTriangleVerts2D(i);
 
@@ -93,8 +93,8 @@ protected:
 //	auto radius = GetRadius();
 //	auto outerRadius = radius + GetToothWidth();
 //
-//	Vertices.push_back(GetCenter());
-//	Normals.push_back(V3{ 1, 0, 0 });
+//	Vertices.PUSH(GetCenter());
+//	Normals.PUSH(V3{ 1, 0, 0 });
 //
 //	// Iterate through all spokes (NumTeeth*2)
 //	for (int i = 1; i <= NumTeeth * 2; i++) {
@@ -103,18 +103,18 @@ protected:
 //		double sT = sin(theta);
 //
 //		// Create vertices for front of gear
-//		Vertices.push_back(V3{ 0 + center.X, radius * cT, radius * sT });
-//		Vertices.push_back(V3{ 0 + center.X, outerRadius * cT, outerRadius * sT });
+//		Vertices.PUSH(V3{ 0 + center.X, radius * cT, radius * sT });
+//		Vertices.PUSH(V3{ 0 + center.X, outerRadius * cT, outerRadius * sT });
 //		// Create Vertices for back of gear
-//		Vertices.push_back(V3{ -GearWidth, outerRadius * cT, outerRadius * sT });
-//		Vertices.push_back(V3{ -GearWidth, radius * cT, radius * sT });
+//		Vertices.PUSH(V3{ -GearWidth, outerRadius * cT, outerRadius * sT });
+//		Vertices.PUSH(V3{ -GearWidth, radius * cT, radius * sT });
 //
 //		MakeGearTriangleVerts2D(i);
 //
-//		Normals.push_back(V3{ 1, 0, 0 });
-//		Normals.push_back(V3{ 1, 0, 0 });
-//		Normals.push_back(V3{ 1, 0, 0 });
-//		Normals.push_back(V3{ 1, 0, 0 });
+//		Normals.PUSH(V3{ 1, 0, 0 });
+//		Normals.PUSH(V3{ 1, 0, 0 });
+//		Normals.PUSH(V3{ 1, 0, 0 });
+//		Normals.PUSH(V3{ 1, 0, 0 });
 //		//	UV0.Add(uvAtI(i)); // TODO: Understand weird striping
 //		//	UV0.Add(uvAtI(i));
 //		//	UV0.Add(uvAtI(i));
@@ -149,58 +149,58 @@ protected:
 //		if (i < NumTeeth * 2) {
 //			if ((i & 1) == 1) { // Gear tooth
 //				// Make gear face triangle for tooth
-//				TriangleVerts.push_back(even6); // Neighbor's outer vertex
-//				TriangleVerts.push_back(even2); // Outer vertex
-//				TriangleVerts.push_back(0);     // Triangles all sharing vertex 0, the center point
+//				TriangleVerts.PUSH(even6); // Neighbor's outer vertex
+//				TriangleVerts.PUSH(even2); // Outer vertex
+//				TriangleVerts.PUSH(0);     // Triangles all sharing vertex 0, the center point
 //				// Make 2 tris for outer face of tooth
-//				TriangleVerts.push_back(even6);
-//				TriangleVerts.push_back(even7);
-//				TriangleVerts.push_back(even3);
-//				TriangleVerts.push_back(even3);
-//				TriangleVerts.push_back(even2);
-//				TriangleVerts.push_back(even6);
+//				TriangleVerts.PUSH(even6);
+//				TriangleVerts.PUSH(even7);
+//				TriangleVerts.PUSH(even3);
+//				TriangleVerts.PUSH(even3);
+//				TriangleVerts.PUSH(even2);
+//				TriangleVerts.PUSH(even6);
 //				// Make 2 tris for cw side of tooth
-//				TriangleVerts.push_back(even1);
-//				TriangleVerts.push_back(even2);
-//				TriangleVerts.push_back(even4);
-//				TriangleVerts.push_back(even2);
-//				TriangleVerts.push_back(even3);
-//				TriangleVerts.push_back(even4);
+//				TriangleVerts.PUSH(even1);
+//				TriangleVerts.PUSH(even2);
+//				TriangleVerts.PUSH(even4);
+//				TriangleVerts.PUSH(even2);
+//				TriangleVerts.PUSH(even3);
+//				TriangleVerts.PUSH(even4);
 //				// Make 2 tris for ccw side of tooth
-//				TriangleVerts.push_back(even8);
-//				TriangleVerts.push_back(even7);
-//				TriangleVerts.push_back(even6);
-//				TriangleVerts.push_back(even5);
-//				TriangleVerts.push_back(even8);
-//				TriangleVerts.push_back(even6);
+//				TriangleVerts.PUSH(even8);
+//				TriangleVerts.PUSH(even7);
+//				TriangleVerts.PUSH(even6);
+//				TriangleVerts.PUSH(even5);
+//				TriangleVerts.PUSH(even8);
+//				TriangleVerts.PUSH(even6);
 //			}
 //			else // Gap between gear teeth
 //			{
 //				// Make gear face triangle
-//				TriangleVerts.push_back(0);
-//				TriangleVerts.push_back(odd3); // Inner vertex
-//				TriangleVerts.push_back(odd1); // Neighbor's inner vertex 
+//				TriangleVerts.PUSH(0);
+//				TriangleVerts.PUSH(odd3); // Inner vertex
+//				TriangleVerts.PUSH(odd1); // Neighbor's inner vertex 
 //				// Make 2 tris for outer face of gap
-//				TriangleVerts.push_back(odd3);
-//				TriangleVerts.push_back(odd4);
-//				TriangleVerts.push_back(odd1);
-//				TriangleVerts.push_back(odd1);
-//				TriangleVerts.push_back(odd4);
-//				TriangleVerts.push_back(odd2);
+//				TriangleVerts.PUSH(odd3);
+//				TriangleVerts.PUSH(odd4);
+//				TriangleVerts.PUSH(odd1);
+//				TriangleVerts.PUSH(odd1);
+//				TriangleVerts.PUSH(odd4);
+//				TriangleVerts.PUSH(odd2);
 //			}
 //		}
 //		else if (i == NumTeeth * 2) {
 //			// Last triangle face, clockwise, a gap
-//			TriangleVerts.push_back(0);
-//			TriangleVerts.push_back(1);
-//			TriangleVerts.push_back(odd1);
+//			TriangleVerts.PUSH(0);
+//			TriangleVerts.PUSH(1);
+//			TriangleVerts.PUSH(odd1);
 //			// Make 2 tris for outer face of gap
-//			TriangleVerts.push_back(1);
-//			TriangleVerts.push_back(4);
-//			TriangleVerts.push_back(odd1);
-//			TriangleVerts.push_back(odd1);
-//			TriangleVerts.push_back(4);
-//			TriangleVerts.push_back(odd2);
+//			TriangleVerts.PUSH(1);
+//			TriangleVerts.PUSH(4);
+//			TriangleVerts.PUSH(odd1);
+//			TriangleVerts.PUSH(odd1);
+//			TriangleVerts.PUSH(4);
+//			TriangleVerts.PUSH(odd2);
 //		}
 //	}
 

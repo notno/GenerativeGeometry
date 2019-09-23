@@ -8,33 +8,33 @@ using std::vector;
 class Circle : public Geometry { 
 
 	int NumSpokes;
-	double Radius;
+	double Radius; 
 
 public:
-	Circle() : Geometry(vec3(0,0,0)),NumSpokes(16), Radius(10) {};
+	Circle() : Geometry(V3(0,0,0)),NumSpokes(16), Radius(10) {};
 
-	Circle(vec3 center, double radius, int edges) : Geometry(center), Radius(radius), NumSpokes(edges) {};
+	Circle(V3 center, double radius, int edges) : Geometry(center), Radius(radius), NumSpokes(edges) {};
 
 	virtual void Draw() { MakeTriangles(); };
 
 	double GetRadius() const { return Radius; }
 	int GetTriangleAt(int i) const { return TriangleVerts[i]; }
-	vec3 GetVertexAt(int i) const { return Vertices[i]; }
-	vec3 GetNormalAt(int i) const { return Normals[i]; }
+	V3 GetVertexAt(int i) const { return Vertices[i]; }
+	V3 GetNormalAt(int i) const { return Normals[i]; }
 	int GetNumSpokes() const { return NumSpokes; };
-	int GetNumVerts() const { return Vertices.size(); };
-	int GetNumNormals() const { return Normals.size(); };
-	int GetNumTriangleVerts() const { return TriangleVerts.size(); };
+	int GetNumVerts() const { return Vertices.NUM(); };
+	int GetNumNormals() const { return Normals.NUM(); };
+	int GetNumTriangleVerts() const { return TriangleVerts.NUM(); };
 
-	vector<int> GetTriangleVerts() const { return TriangleVerts; };
-	vector<vec3> GetVertices() const { return Vertices; };
-	vector<vec3> GetNormals() const { return Normals; };
+	VEC<int> GetTriangleVerts() const { return TriangleVerts; };
+	VEC<V3> GetVertices() const { return Vertices; };
+	VEC<V3> GetNormals() const { return Normals; };
 
 protected:
 
-	vector<int> TriangleVerts;
-	vector<vec3> Vertices;
-	vector<vec3> Normals;
+	VEC<int> TriangleVerts;
+	VEC<V3> Vertices;
+	VEC<V3> Normals;
 
 	double GetEdgeWidthUnit() const {
 		return 2.0 * pi / NumSpokes;
@@ -44,15 +44,15 @@ protected:
 	};
 
 	virtual void AddTri(int a, int b, int c) {
-		TriangleVerts.push_back(a);
-		TriangleVerts.push_back(b);
-		TriangleVerts.push_back(c);
+		TriangleVerts.PUSH(a);
+		TriangleVerts.PUSH(b);
+		TriangleVerts.PUSH(c);
 	}
 
 	virtual void MakeTriangles() override {
 		auto c = GetCenter();
-		Vertices.push_back(c);
-		Normals.push_back(vec3( 1, 0, 0 ));
+		Vertices.PUSH(c);
+		Normals.PUSH(V3( 1, 0, 0 ));
 
 		// Iterate through all spokes (numTeeth*2)
 		for (int i = 1; i <= NumSpokes; i++) {
@@ -61,7 +61,7 @@ protected:
 			double sT = sin(theta);
 
 			// Create vertices for front of circle
-			Vertices.push_back(vec3( 0 + c.X, Radius * cT + c.y, Radius * sT + c.z ));
+			Vertices.PUSH(V3( 0 + c.X, Radius * cT + c.Y, Radius * sT + c.Z ));
 
 			if (i < NumSpokes) {
 				// Make a face triangle 
@@ -73,7 +73,7 @@ protected:
 				AddTri(1, i, 0);
 			}
 
-			Normals.push_back(vec3( 1, 0, 0 ));
+			Normals.PUSH(V3( 1, 0, 0 ));
 		}
 	};
 };
