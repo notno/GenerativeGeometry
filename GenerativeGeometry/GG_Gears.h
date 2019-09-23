@@ -11,7 +11,7 @@ class Gear2D : public Circle {
 public:
 	Gear2D(vec3 center, double radius, int numTeeth, double width = 30.0) : 
 		Circle(center, radius, numTeeth * 2), 
-		NumTeeth(numTeeth) { SetToothWidthUnit(radius); };
+		NumTeeth(numTeeth), ToothWidthUnit(SetToothWidthUnit(radius)) { };
 
 	void Draw() override { MakeTriangles(); }
 
@@ -35,7 +35,7 @@ protected:
 		auto outerRadius = radius + GetToothWidth();
 
 		Vertices.push_back(GetCenter());
-		Normals.push_back(vec3{ 1, 0, 0 });
+		Normals.push_back(vec3(1, 0, 0));
 
 		// Iterate through all spokes (NumTeeth*2)
 		for (int i = 1; i <= NumTeeth * 2; i++) {
@@ -44,12 +44,12 @@ protected:
 			double sT = sin(theta);
 
 			// Create vertices for front of gear
-			Vertices.push_back(vec3{ 0 + center.x, radius * cT, radius * sT });
-			Vertices.push_back(vec3{ 0 + center.x, outerRadius * cT, outerRadius * sT });
+			Vertices.push_back(vec3(0 + center.X, radius * cT, radius * sT));
+			Vertices.push_back(vec3(0 + center.X, outerRadius * cT, outerRadius * sT));
 			
 			// Create placeholder normals, 1 for each vert
-			Normals.push_back(vec3{ 1, 0, 0 });
-			Normals.push_back(vec3{ 1, 0, 0 });
+			Normals.push_back(vec3(1, 0, 0));
+			Normals.push_back(vec3(1, 0, 0));
 
 			MakeGearTriangleVerts2D(i);
 
@@ -94,7 +94,7 @@ protected:
 //	auto outerRadius = radius + GetToothWidth();
 //
 //	Vertices.push_back(GetCenter());
-//	Normals.push_back(vec3{ 1, 0, 0 });
+//	Normals.push_back(V3{ 1, 0, 0 });
 //
 //	// Iterate through all spokes (NumTeeth*2)
 //	for (int i = 1; i <= NumTeeth * 2; i++) {
@@ -103,18 +103,18 @@ protected:
 //		double sT = sin(theta);
 //
 //		// Create vertices for front of gear
-//		Vertices.push_back(vec3{ 0 + center.x, radius * cT, radius * sT });
-//		Vertices.push_back(vec3{ 0 + center.x, outerRadius * cT, outerRadius * sT });
+//		Vertices.push_back(V3{ 0 + center.X, radius * cT, radius * sT });
+//		Vertices.push_back(V3{ 0 + center.X, outerRadius * cT, outerRadius * sT });
 //		// Create Vertices for back of gear
-//		Vertices.push_back(vec3{ -GearWidth, outerRadius * cT, outerRadius * sT });
-//		Vertices.push_back(vec3{ -GearWidth, radius * cT, radius * sT });
+//		Vertices.push_back(V3{ -GearWidth, outerRadius * cT, outerRadius * sT });
+//		Vertices.push_back(V3{ -GearWidth, radius * cT, radius * sT });
 //
 //		MakeGearTriangleVerts2D(i);
 //
-//		Normals.push_back(vec3{ 1, 0, 0 });
-//		Normals.push_back(vec3{ 1, 0, 0 });
-//		Normals.push_back(vec3{ 1, 0, 0 });
-//		Normals.push_back(vec3{ 1, 0, 0 });
+//		Normals.push_back(V3{ 1, 0, 0 });
+//		Normals.push_back(V3{ 1, 0, 0 });
+//		Normals.push_back(V3{ 1, 0, 0 });
+//		Normals.push_back(V3{ 1, 0, 0 });
 //		//	UV0.Add(uvAtI(i)); // TODO: Understand weird striping
 //		//	UV0.Add(uvAtI(i));
 //		//	UV0.Add(uvAtI(i));

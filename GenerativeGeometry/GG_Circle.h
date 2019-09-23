@@ -3,13 +3,15 @@
 
 namespace GenerativeGeometry {
 
-class Circle : public Geometry {
+using std::vector;
+
+class Circle : public Geometry { 
 
 	int NumSpokes;
 	double Radius;
 
 public:
-	Circle() : NumSpokes(16), Radius(10) {};
+	Circle() : Geometry(vec3(0,0,0)),NumSpokes(16), Radius(10) {};
 
 	Circle(vec3 center, double radius, int edges) : Geometry(center), Radius(radius), NumSpokes(edges) {};
 
@@ -24,11 +26,15 @@ public:
 	int GetNumNormals() const { return Normals.size(); };
 	int GetNumTriangleVerts() const { return TriangleVerts.size(); };
 
+	vector<int> GetTriangleVerts() const { return TriangleVerts; };
+	vector<vec3> GetVertices() const { return Vertices; };
+	vector<vec3> GetNormals() const { return Normals; };
+
 protected:
 
-	std::vector<int> TriangleVerts;
-	std::vector<vec3> Vertices;
-	std::vector<vec3> Normals;
+	vector<int> TriangleVerts;
+	vector<vec3> Vertices;
+	vector<vec3> Normals;
 
 	double GetEdgeWidthUnit() const {
 		return 2.0 * pi / NumSpokes;
@@ -46,7 +52,7 @@ protected:
 	virtual void MakeTriangles() override {
 		auto c = GetCenter();
 		Vertices.push_back(c);
-		Normals.push_back(vec3{ 1, 0, 0 });
+		Normals.push_back(vec3( 1, 0, 0 ));
 
 		// Iterate through all spokes (numTeeth*2)
 		for (int i = 1; i <= NumSpokes; i++) {
@@ -55,7 +61,7 @@ protected:
 			double sT = sin(theta);
 
 			// Create vertices for front of circle
-			Vertices.push_back(vec3{ 0 + c.x, Radius * cT + c.y, Radius * sT + c.z });
+			Vertices.push_back(vec3( 0 + c.X, Radius * cT + c.y, Radius * sT + c.z ));
 
 			if (i < NumSpokes) {
 				// Make a face triangle 
@@ -67,7 +73,7 @@ protected:
 				AddTri(1, i, 0);
 			}
 
-			Normals.push_back(vec3{ 1, 0, 0 });
+			Normals.push_back(vec3( 1, 0, 0 ));
 		}
 	};
 };
