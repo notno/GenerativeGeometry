@@ -46,7 +46,10 @@ TEST(Circle, ShouldMakePredictableNormals) {
 	EXPECT_EQ(circle.GetNormalAt(0).z, 0);
 }
 
-TEST(Gears, ShouldHaveRightNumberOfTeeth) {
+
+
+
+TEST(Gears2D, ShouldHaveRightNumberOfTeeth) {
 	auto gear = GenerativeGeometry::Gear2D(vec3{ 0.0,0.0,0.0 }, 10, 16);
 	gear.Draw();
 	EXPECT_EQ(gear.GetNumTeeth(), 16);
@@ -54,22 +57,38 @@ TEST(Gears, ShouldHaveRightNumberOfTeeth) {
 
 //TEST(Gears, ShouldHaveProperToothWidth){}
 
-TEST(Gears, ShouldHaveRightNumberOfEdges) {
+TEST(Gears2D, ShouldHaveRightNumberOfSpokes) {
 	auto gear = GenerativeGeometry::Gear2D(vec3{ 0.0,0.0,0.0 }, 10, 16);
 	gear.Draw();
-	EXPECT_EQ(gear.GetNumEdges(), 32);
+	EXPECT_EQ(gear.GetNumSpokes(), 32);
 }
 
-TEST(Gears, ShouldHaveRightNumberOfVertices) {
+TEST(Gears2D, ShouldHaveRightNumberOfVertices) {
 	auto gear = GenerativeGeometry::Gear2D(vec3{ 0.0,0.0,0.0 }, 10, 16);
 	gear.Draw();
-	// 1 vert for center + 4*numSpokes
-	// where numSpokes = 2 * numTeeth  
-	EXPECT_EQ(gear.GetNumVerts(), gear.GetNumTeeth() * 2 * 4 + 1);
+	// 1 vert for center + 2*numSpokes, where numSpokes = 2*numTeeth  
+	EXPECT_EQ(gear.GetNumVerts(), 1 + gear.GetNumTeeth() * 4);
 }
 
-//TEST(Gears, ShouldHaveRightNumberOfNormals) {
+TEST(Gears2D, ShouldHaveRightNumberOfNormals) {
+	auto gear = GenerativeGeometry::Gear2D(vec3{ 0.0,0.0,0.0 }, 10, 16);
+	gear.Draw();
+	EXPECT_EQ(gear.GetNumNormals(), gear.GetNumVerts());
+}
+
+TEST(Gears2D, ShouldHaveRightNumberOfTriangles) {
+	auto gear = GenerativeGeometry::Gear2D(vec3{ 0.0,0.0,0.0 }, 10, 16);
+	gear.Draw();
+	// Each tooth zone = 3 vert indices for 1 triangles
+	// Each gap zone = 3 vert indices for 1 triangles
+	// Therefor: numSpokes * 3
+	EXPECT_EQ(gear.GetNumTriangleVerts(), 96);
+}
+
+//TEST(Gears3D, ShouldHaveRightNumberOfTriangles) {
 //	auto gear = GenerativeGeometry::Gear2D(vec3{ 0.0,0.0,0.0 }, 10, 16);
 //	gear.Draw();
-//	EXPECT_EQ(gear.GetNumNorms(), gear.GetNumVerts());
+//	// Tooth zone = 7 triangles
+//	// Gap zone = 3 triangles
+//	EXPECT_EQ(gear.GetNumTriangleVerts(), 7*16 + 3*16);
 //}
