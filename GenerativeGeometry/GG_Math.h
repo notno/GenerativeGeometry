@@ -17,18 +17,18 @@ namespace GenerativeGeometry {
 			return distr(generator);
 		};
 
-		static float RandRangeReal(float a, float b)
+		static double RandRangeReal(double a, double b)
 		{
 			// Obtain a random number from hardware
 			std::random_device rd;
 			// A Mersenne Twister pseudo-random generator of 32 bit #s
 			std::mt19937 generator(rd());
 			// Inclusive range between a and b
-			std::uniform_real_distribution<float> distr(a, b);
+			std::uniform_real_distribution<double> distr(a, b);
 			return distr(generator);
 		};
 
-		static float RandNormalized() {
+		static double RandNormalized() {
 			return RandRangeReal(0, 1);
 		}
 	};

@@ -3,29 +3,54 @@
 
 namespace GenerativeGeometry {
 
-class Gear2D : Circle {
-	int numTeeth;
+class Gear2D : public Circle {
+	int NumTeeth;
+	double ToothWidthUnit;
+	double GearWidth;
+
 public:
-	Gear2D(vec3 center, float radius, int numTeeth) : Circle(center, radius, numTeeth * 2), numTeeth(numTeeth) {};
+	Gear2D(vec3 center, double radius, int numTeeth, double width = 30.0) : 
+		Circle(center, radius, numTeeth * 2), 
+		NumTeeth(numTeeth) { SetToothWidthUnit(radius); };
+
+	void Draw() override { MakeTriangles(); }
+
+	int GetNumTeeth() const { return NumTeeth; };
+	double GetToothWidthUnit() const { return ToothWidthUnit; };
+	double GetToothWidth() const {
+		return GetToothWidthUnit() * GetRadius();
+	}
+	double GetGearWidth() const {
+		return GearWidth;
+	};
+
 protected:
+	double SetToothWidthUnit(double) const {
+		return 2.0 * pi / (NumTeeth * 2.0);
+	};
+
 	virtual void MakeTriangles() override {
+		auto center = GetCenter();
+		auto radius = GetRadius();
+		auto outerRadius = radius + GetToothWidth();
+
 		Vertices.push_back(GetCenter());
 		Normals.push_back(vec3{ 1, 0, 0 });
 
-		// Iterate through all spokes (numTeeth*2)
-		//for (int i = 1; i <= numTeeth * 2; i++) {
-		//	double theta = getTheta(i - 1);
-		//	float cT = cos(theta);
-		//	float sT = sin(theta);
-		//	// TODO assure that this order is maintained
-		//	// Create vertices for front of gear
-		//	vertices.Add(FVector(0, innerRadius * cT, innerRadius * sT));
-		//	vertices.Add(FVector(0, outerRadius * cT, outerRadius * sT));
-		//	// Create vertices for back of gear
-		//	vertices.Add(FVector(-gearWidth, outerRadius * cT, outerRadius * sT));
-		//	vertices.Add(FVector(-gearWidth, innerRadius * cT, innerRadius * sT));
+		// Iterate through all spokes (NumTeeth*2)
+		for (int i = 1; i <= NumTeeth * 2; i++) {
+			double theta = GetThetaAtIthSpoke(i - 1);
+			double cT = cos(theta);
+			double sT = sin(theta);
 
-		//	// Storing indices of vertices for easy use when making triangles
+			// Create vertices for front of gear
+			Vertices.push_back(vec3{ 0 + center.x, radius * cT, radius * sT });
+			Vertices.push_back(vec3{ 0 + center.x, outerRadius * cT, outerRadius * sT });
+			// Create Vertices for back of gear
+			Vertices.push_back(vec3{ -GearWidth, outerRadius * cT, outerRadius * sT });
+			Vertices.push_back(vec3{ -GearWidth, radius * cT, radius * sT });
+
+		//	// Storing indices of Vertices for easy use when making triangles
 		//	// Using "even" for even numbered spokes, "odd" for odd spokes
 		//	int even4 = 4 * i,
 		//		even3 = even4 - 1,
@@ -40,7 +65,7 @@ protected:
 		//		odd3 = even5,
 		//		odd4 = even8;
 
-		//	if (i < numTeeth * 2) {
+		//	if (i < NumTeeth * 2) {
 		//		if ((i & 1) == 1) { // Gear tooth
 		//			// Make gear face triangle for tooth
 		//			trianglePoints.Add(even6); // Neighbor's outer vertex
@@ -83,7 +108,7 @@ protected:
 		//			trianglePoints.Add(odd2);
 		//		}
 		//	}
-		//	else if (i == numTeeth * 2) {
+		//	else if (i == NumTeeth * 2) {
 		//		// Last triangle face, clockwise, a gap
 		//		trianglePoints.Add(0);
 		//		trianglePoints.Add(1);
@@ -113,28 +138,21 @@ protected:
 		//	vertexColors.Add(FLinearColor(0.75, 0, 0, 1.0));
 		//	vertexColors.Add(FLinearColor(0.75, 0, 0, 1.0));
 		//	vertexColors.Add(FLinearColor(0.75, 0, 0, 1.0));
-		//}
+		}
 	};
 
 	//int GetNumTeeth() const {
 	//	return teeth.size();
 	//};
 
-	//double GetToothWidthUnit() const {
-	//	return 2.0 * pi() / (numTeeth * 2.0);
-	//};
 
-	//double GetToothWidth() const {
-	//	return GetToothWidthUnit() * innerRadius;
-	//}
+}; 
 
-};
+//class Gear3D : Gear2D {
+//
+//public:
+//	//Gear3D(int NumTeeth) : Gear2D(NumTeeth) {};
+//
+//};  
 
-class Gear3D : Gear2D {
-
-public:
-	//Gear3D(int numTeeth) : Gear2D(numTeeth) {};
-
-};  
-
-}
+}; // namespace GenerativeGeometry

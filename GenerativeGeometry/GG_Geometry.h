@@ -4,9 +4,9 @@
 namespace GenerativeGeometry {
 
 const double pi = 3.14159265358979323846;
-struct vec2 { float x, y; };
-struct vec3 { float x, y, z; };
-struct vec4 { float r, g, b, a; };
+struct vec2 { double x, y; };
+struct vec3 { double x, y, z; };
+struct vec4 { double r, g, b, a; };
 
 class Geometry {
 

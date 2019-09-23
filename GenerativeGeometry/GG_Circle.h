@@ -6,29 +6,36 @@ namespace GenerativeGeometry {
 class Circle : public Geometry {
 
 	int NumEdges;
-
-	float Radius;
+	double Radius;
 
 public:
-	Circle() :NumEdges(16), Radius(10) {};
+	Circle() : NumEdges(16), Radius(10) {};
 
-	Circle(vec3 center, float radius, int edges) : Geometry(center), Radius(radius), NumEdges(edges) {};
+	Circle(vec3 center, double radius, int edges) : Geometry(center), Radius(radius), NumEdges(edges) {};
 
-	void Draw() { MakeTriangles(); };
+	virtual void Draw() { MakeTriangles(); };
 
-	int GetTriangleAt(int i) { return Triangles[i]; }
-	vec3 GetVertexAt(int i) { return Vertices[i]; }
-	vec3 GetNormalAt(int i) { return Normals[i]; }
+	int GetTriangleAt(int i) const { return Triangles[i]; }
+	vec3 GetVertexAt(int i) const { return Vertices[i]; }
+	vec3 GetNormalAt(int i) const { return Normals[i]; }
+
+	int GetNumEdges() const { return NumEdges; };
+	int GetNumVerts() const { return Vertices.size(); };
+	int GetNumNormals() const { return Normals.size(); };
+
+	double GetRadius() const { return Radius; }
 
 protected:
+
+	
 	std::vector<int> Triangles;
 	std::vector<vec3> Vertices;
 	std::vector<vec3> Normals;
 
-	float GetEdgeWidthUnit() const {
+	double GetEdgeWidthUnit() const {
 		return 2.0 * pi / NumEdges;
 	};
-	float GetThetaAtIthSpoke(int i) const {
+	double GetThetaAtIthSpoke(int i) const {
 		return i * GetEdgeWidthUnit();
 	};
 
@@ -50,9 +57,9 @@ protected:
 
 		// Iterate through all spokes (numTeeth*2)
 		for (int i = 1; i <= NumEdges; i++) {
-			float theta = GetThetaAtIthSpoke(i - 1);
-			float cT = cos(theta);
-			float sT = sin(theta);
+			double theta = GetThetaAtIthSpoke(i - 1);
+			double cT = cos(theta);
+			double sT = sin(theta);
 
 			// Create vertices for front of circle
 			Vertices.push_back(vec3{ 0 + c.x, Radius * cT + c.y, Radius * sT + c.z });
