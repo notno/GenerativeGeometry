@@ -57,7 +57,7 @@ TEST(Circle, ShouldHaveRightNumberOfVerts) {
 
 
 
-TEST(Gears2D, ShouldHaveRightNumberOfTeeth) {
+TEST(Gear2D, ShouldHaveRightNumberOfTeeth) {
 	auto gear = GenerativeGeometry::Gear2D(vec3( 0.0,0.0,0.0 ), 10, 16);
 	gear.Draw();
 	EXPECT_EQ(gear.GetNumTeeth(), 16);
@@ -71,44 +71,48 @@ TEST(Gears, ShouldHaveProperToothWidth){
 	
 }
 
-TEST(Gears2D, ShouldHaveRightNumberOfSpokes) {
+TEST(Gear2D, ShouldHaveRightNumberOfSpokes) {
 	auto gear = GenerativeGeometry::Gear2D(vec3( 0.0,0.0,0.0 ), 10, 16);
 	gear.Draw();
 	EXPECT_EQ(gear.GetNumSpokes(), 32);
 }
 
-TEST(Gears2D, ShouldHaveRightNumberOfVertices) {
+TEST(Gear2D, ShouldHaveRightNumberOfVertices) {
 	auto gear = GenerativeGeometry::Gear2D(vec3( 0.0,0.0,0.0 ), 10, 16);
 	gear.Draw();
 	// 1 vert for center + 2*numSpokes, where numSpokes = 2*numTeeth  
 	EXPECT_EQ(gear.GetNumVerts(), 1 + gear.GetNumTeeth() * 4);
 }
 
-TEST(Gears2D, ShouldGetRightNumberOfVertsPublicly) {
+TEST(Gear2D, ShouldGetRightNumberOfVertsPublicly) {
 	auto gear = GenerativeGeometry::Gear2D(vec3( 0.0,0.0,0.0 ), 10, 16);
 	gear.Draw();
 	EXPECT_EQ(gear.GetVertices().size(), 65);
 }
 
-TEST(Gears2D, ShouldHaveRightNumberOfNormals) {
+TEST(Gear2D, ShouldHaveRightNumberOfNormals) {
 	auto gear = GenerativeGeometry::Gear2D(vec3( 0.0,0.0,0.0 ), 10, 16);
 	gear.Draw();
 	EXPECT_EQ(gear.GetNumNormals(), gear.GetNumVerts());
 }
 
-TEST(Gears2D, ShouldHaveRightNumberOfTriangles) {
+TEST(Gear2D, ShouldHaveRightNumberOfTriangleVertices) {
 	auto gear = GenerativeGeometry::Gear2D(vec3( 0.0,0.0,0.0 ), 10, 16);
 	gear.Draw();
 	// Each tooth zone = 3 vert indices for 1 triangles
 	// Each gap zone = 3 vert indices for 1 triangles
 	// Therefor: numSpokes * 3
-	EXPECT_EQ(gear.GetNumTriangleVerts(), 96);
+	EXPECT_EQ(gear.GetNumTriangleVertIndices(), 96);
 }
 
-//TEST(Gears3D, ShouldHaveRightNumberOfTriangles) {
-//	auto gear = GenerativeGeometry::Gear2D(vec3( 0.0,0.0,0.0 )	, 10, 16);
-//	gear.Draw();
-//	// Tooth zone = 7 triangles
-//	// Gap zone = 3 triangles
-//	EXPECT_EQ(gear.GetNumTriangleVerts(), 7*16 + 3*16);
-//}
+TEST(GearD, ShouldHaveRightNumberOfTriangleVertices) {
+	auto gear = GenerativeGeometry::Gear3D(vec3( 0.0,0.0,0.0 ), 10, 16);
+	gear.Draw();
+	// Tooth zone = 7 triangles = 21 vertices
+	// Gap zone = 3 triangles
+	EXPECT_EQ(gear.GetNumTriangleVertIndices(), 21*16 + 9*16);
+}
+
+//Circle, ShouldHaveMoreThanTwoEdges
+//Gear2D, ShouldHaveMoreThanOneTeeth
+//Gear3D, ShouldHaveMoreThanOneTeeth
