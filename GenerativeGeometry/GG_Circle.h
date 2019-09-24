@@ -15,7 +15,7 @@ public:
 
 	Circle(V3 center, double radius, int edges) : Geometry(center), Radius(radius), NumSpokes(edges) {};
 
-	virtual void Draw() { MakeTriangles(); };
+	virtual void Draw() override { MakeTriangles(); };
 
 	double GetRadius() const { return Radius; }
 	int GetTriangleAt(int i) const { return TriangleVertIndices[i]; }

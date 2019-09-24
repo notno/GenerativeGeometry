@@ -126,58 +126,34 @@ protected:
 		if (i < NumTeeth * 2) {
 			if ((i & 1) == 1) { // Gear tooth
 				// Make gear face triangle for tooth
-				TriangleVertIndices.PUSH(even6); // Neighbor's outer vertex
-				TriangleVertIndices.PUSH(even2); // Outer vertex
-				TriangleVertIndices.PUSH(0);     // Triangles all sharing vertex 0, the center point
+				// Neighbor's outer vertex, Outer vertex
+				// Triangles all sharing vertex 0, the center point
+				AddTri(even6, even2, 0);
 				// Make 2 tris for outer face of tooth
-				TriangleVertIndices.PUSH(even6);
-				TriangleVertIndices.PUSH(even7);
-				TriangleVertIndices.PUSH(even3);
-				TriangleVertIndices.PUSH(even3);
-				TriangleVertIndices.PUSH(even2);
-				TriangleVertIndices.PUSH(even6);
+				AddTri(even6, even7, even3);
+				AddTri(even3, even2, even6);
 				// Make 2 tris for cw side of tooth
-				TriangleVertIndices.PUSH(even1);
-				TriangleVertIndices.PUSH(even2);
-				TriangleVertIndices.PUSH(even4);
-				TriangleVertIndices.PUSH(even2);
-				TriangleVertIndices.PUSH(even3);
-				TriangleVertIndices.PUSH(even4);
+				AddTri(even1, even2, even4);
+				AddTri(even2, even3, even4);
 				// Make 2 tris for ccw side of tooth
-				TriangleVertIndices.PUSH(even8);
-				TriangleVertIndices.PUSH(even7);
-				TriangleVertIndices.PUSH(even6);
-				TriangleVertIndices.PUSH(even5);
-				TriangleVertIndices.PUSH(even8);
-				TriangleVertIndices.PUSH(even6);
+				AddTri(even8, even7, even6);
+				AddTri(even5, even8, even6);
 			}
 			else // Gap between gear teeth
 			{
 				// Make gear face triangle
-				TriangleVertIndices.PUSH(0);
-				TriangleVertIndices.PUSH(odd3); // Inner vertex
-				TriangleVertIndices.PUSH(odd1); // Neighbor's inner vertex 
+				AddTri(0, odd3, odd1);
 				// Make 2 tris for outer face of gap
-				TriangleVertIndices.PUSH(odd3);
-				TriangleVertIndices.PUSH(odd4);
-				TriangleVertIndices.PUSH(odd1);
-				TriangleVertIndices.PUSH(odd1);
-				TriangleVertIndices.PUSH(odd4);
-				TriangleVertIndices.PUSH(odd2);
+				AddTri(odd3, odd4, odd1);
+				AddTri(odd1, odd4, odd2);
 			}
 		} 
 		else if (i == NumTeeth * 2) {
 			// Last triangle face, clockwise, a gap
-			TriangleVertIndices.PUSH(0);
-			TriangleVertIndices.PUSH(1);
-			TriangleVertIndices.PUSH(odd1);
+			AddTri(0, 1, odd1);
 			// Make 2 tris for outer face of gap
-			TriangleVertIndices.PUSH(1);
-			TriangleVertIndices.PUSH(4);
-			TriangleVertIndices.PUSH(odd1);
-			TriangleVertIndices.PUSH(odd1);
-			TriangleVertIndices.PUSH(4);
-			TriangleVertIndices.PUSH(odd2);
+			AddTri(1, 4, odd1);
+			AddTri(odd1, 4, odd2);
 		}
 	}
 
