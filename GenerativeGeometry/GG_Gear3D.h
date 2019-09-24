@@ -12,7 +12,7 @@ namespace GenerativeGeometry {
 			if (LastGear != nullptr && abs(LastGear->RotationFactor) == 1) {
 				RotationFactor = -LastGear->RotationFactor;
 			}
-			else {
+			else { //THIS IS THE FIRST GEAR
 				RotationFactor = 1;
 			}
 		
@@ -23,6 +23,24 @@ namespace GenerativeGeometry {
 			return GearWidth;
 		};
 
+		Gear3D(V3 center) : Gear3D(center, ComputeRadius(), ComputeNumTeeth(16)) {
+			
+		};
+
+		double ComputeRadius() {
+			double n;
+			if (LastGear != nullptr && abs(LastGear->RotationFactor) == 1) {
+				n = LastGear->GetRadius() + 1.0;
+			}
+			else { //THIS IS THE FIRST GEAR
+				n = 10.0;
+			}
+			return n;
+		}
+
+		int ComputeNumTeeth(int n) {
+			return n;
+		}
 	protected:
 		double GearWidth;
 		static Gear3D* LastGear;

@@ -37,7 +37,7 @@ struct vec2 {
 struct vec3 { 
 	double X, Y, Z; 
 	vec3(double X, double Y, double Z) : X(X), Y(Y), Z(Z) {};
-	vec3() : X(0), Y(0), Z(0) {};
+	vec3() : X(0.0), Y(0.0), Z(0.0) {};
 };
 struct vec4 { 
 	double r, g, b, a; 

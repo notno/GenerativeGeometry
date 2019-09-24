@@ -25,6 +25,9 @@ public:
 	int GetNumVerts() const { return Vertices.NUM(); };
 	int GetNumNormals() const { return Normals.NUM(); };
 	int GetNumTriangleVertIndices() const { return TriangleVertIndices.NUM(); };
+	double GetDistanceFromPrevious() const {
+		return 0.0;
+	}
 
 	VEC<int> GetTriangleVerts() const { return TriangleVertIndices; };
 	VEC<V3> GetVertices() const { return Vertices; };

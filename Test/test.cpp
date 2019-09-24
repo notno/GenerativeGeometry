@@ -115,6 +115,36 @@ TEST(Gear3D, ShouldHaveRightNumberOfTriangleVertices) {
 	EXPECT_EQ(gear.GetNumTriangleVertIndices(), 21*16 + 9*16);
 }
 
+TEST(Gear3D, ShouldWorkJustGivenCenter) {
+	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0));
+	EXPECT_EQ(gear1.GetCenter().X, 0.0);
+}
+
+TEST(Gear3D, ShouldSetFirstGearRadiusAutomatically) {
+	auto gear = GenerativeGeometry::Gear3D(vec3());
+	EXPECT_EQ(gear.GetRadius(), 10.0);
+}
+
+TEST(Gear3D, ShouldSetSecondGearRadiusBasedOnFirst) {
+	auto gear = GenerativeGeometry::Gear3D(vec3());
+	auto gear2 = GenerativeGeometry::Gear3D(vec3());
+
+	EXPECT_EQ(gear2.GetRadius(), 11.0);
+}
+
+TEST(Gear3D, ShouldComputeDistanceFromPrevious) {
+	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0));
+	auto gear2 = GenerativeGeometry::Gear3D(vec3(0.0, 10.0, 1.0));
+	auto gear3 = GenerativeGeometry::Gear3D(vec3(0.0, 20.0, 2.0));
+	EXPECT_FLOAT_EQ(gear2.GetDistanceFromPrevious(), sqrt(101));
+}
+
+//TEST(Gear3D, ShouldComputeRadiusFromDistanceToPrevious) {
+//	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0));
+//	auto gear2 = GenerativeGeometry::Gear3D(vec3(0.0, 10.0, 1.0));
+//	auto gear3 = GenerativeGeometry::Gear3D(vec3(0.0, 20.0, 2.0));
+//	EXPECT_EQ(gear2.GetRadius(), false);
+//}
 
 TEST(GearsInAChain, ShouldAlternateRotationFactor) {
 	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
@@ -123,15 +153,23 @@ TEST(GearsInAChain, ShouldAlternateRotationFactor) {
 	auto gear4 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
 	auto gear5 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
 	auto gear6 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	int a = gear1.GetRotFactor();
-	EXPECT_EQ(gear2.GetRotFactor(), -a);
-	EXPECT_EQ(gear3.GetRotFactor(), a);
-	EXPECT_EQ(gear4.GetRotFactor(), -a);
-	EXPECT_EQ(gear5.GetRotFactor(), a);
-	EXPECT_EQ(gear6.GetRotFactor(), -a);
+	int a = gear1.GetRotationFactor();
+	EXPECT_EQ(gear2.GetRotationFactor(), -a);
+	EXPECT_EQ(gear3.GetRotationFactor(), a);
+	EXPECT_EQ(gear4.GetRotationFactor(), -a);
+	EXPECT_EQ(gear5.GetRotationFactor(), a);
+	EXPECT_EQ(gear6.GetRotationFactor(), -a);
 }
 
+TEST(GearsInAChain, ShouldHaveRadiusRelatedToDistance) {
+	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
+	auto gear2 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
+	auto gear3 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
+}
 
+TEST(GearsInAChain, ShouldHaveSameToothWidth) {
+
+}
 //Circle, ShouldHaveMoreThanTwoEdges
 //Gear2D, ShouldHaveMoreThanOneTeeth
 //Gear3D, ShouldHaveMoreThanOneTeeth
