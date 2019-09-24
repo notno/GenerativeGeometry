@@ -1,13 +1,23 @@
 #pragma once
 #include "GG_Gear2D.h"
-
+#include <iostream>
 namespace GenerativeGeometry {
 
 	class Gear3D : public Gear2D {
 
 	public:
 		Gear3D(V3 center, double radius, int numTeeth, double width = 30.0) :
-			Gear2D(center, radius, numTeeth), GearWidth(width) { };
+			Gear2D(center, radius, numTeeth), GearWidth(width) 
+		{
+			if (LastGear != nullptr && abs(LastGear->RotationFactor) == 1) {
+				RotationFactor = -LastGear->RotationFactor;
+			}
+			else {
+				RotationFactor = 1;
+			}
+		
+			LastGear = this;
+		};
 
 		double GetGearWidth() const {
 			return GearWidth;
@@ -15,6 +25,7 @@ namespace GenerativeGeometry {
 
 	protected:
 		double GearWidth;
+		static Gear3D* LastGear;
 
 		virtual void MakeVertices(int i) override
 		{
@@ -93,5 +104,7 @@ namespace GenerativeGeometry {
 		}
 
 	};
+
+	Gear3D* Gear3D::LastGear = nullptr;
 
 }; // namespace GenerativeGeometry

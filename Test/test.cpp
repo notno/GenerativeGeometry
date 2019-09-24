@@ -8,34 +8,12 @@
 #include "../GenerativeGeometry/GG_Circle.h"
 #include "../GenerativeGeometry/GG_Gear2D.h"
 #include "../GenerativeGeometry/GG_Gear3D.h"
-#include "../GenerativeGeometry/GG_Chain.h"
+//#include "../GenerativeGeometry/GG_Chain.h"
 
 using GenerativeGeometry::vec3;
 using std::vector;
-
-TEST(Chain, ShouldRevealCorrectNumberOfGears) {
-	auto chain = GenerativeGeometry::Chain::Chain();
-	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	chain.AddGear3D(&gear1);
-	auto gear2 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	chain.AddGear3D(&gear2);
-	auto gear3 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	chain.AddGear3D(&gear3);
-	EXPECT_EQ(chain.GetChainLength(), 3);
-}
-
-TEST(Chain, ShouldAlternateRotationFactor) {
-	auto chain = GenerativeGeometry::Chain::Chain();
-	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	chain.AddGear3D(&gear1);
-	auto gear2 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	chain.AddGear3D(&gear2);
-	auto gear3 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	chain.AddGear3D(&gear3);
-	EXPECT_EQ(gear1.GetRotFactor(), 1);
-	EXPECT_EQ(gear2.GetRotFactor(), -1);
-	EXPECT_EQ(gear3.GetRotFactor(), 1);
-}
+using std::cout;
+using std::endl;
 
 TEST(RandRangeInt, ProbablyDoesntProduceBadResults) {
   EXPECT_LT(GenerativeGeometry::Math::RandRangeInt(20,30), 31);
@@ -136,6 +114,23 @@ TEST(Gear3D, ShouldHaveRightNumberOfTriangleVertices) {
 	// Gap zone = 3 triangles
 	EXPECT_EQ(gear.GetNumTriangleVertIndices(), 21*16 + 9*16);
 }
+
+
+TEST(GearsInAChain, ShouldAlternateRotationFactor) {
+	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
+	auto gear2 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
+	auto gear3 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
+	auto gear4 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
+	auto gear5 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
+	auto gear6 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
+	int a = gear1.GetRotFactor();
+	EXPECT_EQ(gear2.GetRotFactor(), -a);
+	EXPECT_EQ(gear3.GetRotFactor(), a);
+	EXPECT_EQ(gear4.GetRotFactor(), -a);
+	EXPECT_EQ(gear5.GetRotFactor(), a);
+	EXPECT_EQ(gear6.GetRotFactor(), -a);
+}
+
 
 //Circle, ShouldHaveMoreThanTwoEdges
 //Gear2D, ShouldHaveMoreThanOneTeeth
