@@ -9,7 +9,7 @@ public:
 		Circle(center, radius, numTeeth * 2), 
 		NumTeeth(numTeeth), ToothWidthUnit(SetToothWidthUnit(radius)) { };
 
-	void Draw() override { MakeTriangles(); }
+	void Generate() override { MakeTriangles(); }
 
 	int GetNumTeeth() const { return NumTeeth; }; 
 	double GetToothWidthUnit() const { return ToothWidthUnit; };
@@ -17,8 +17,9 @@ public:
 		return GetToothWidthUnit() * GetRadius();
 	}
 
-
+	
 protected:
+	int RotationFactor = 1;
 	int NumTeeth;
 	double ToothWidthUnit;
 

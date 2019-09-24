@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include "GG_Gear2D.h"
 
 namespace GenerativeGeometry {

@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="GG_Chain.h" />
     <ClInclude Include="GG_Circle.h" />
     <ClInclude Include="GG_Gear2D.h" />
     <ClInclude Include="GG_Gear3D.h" />
