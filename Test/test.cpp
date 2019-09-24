@@ -6,7 +6,8 @@
 #include "../GenerativeGeometry/GG_Math.h"
 #include "../GenerativeGeometry/GG_Geometry.h"
 #include "../GenerativeGeometry/GG_Circle.h"
-#include "../GenerativeGeometry/GG_Gears.h"
+#include "../GenerativeGeometry/GG_Gear2D.h"
+#include "../GenerativeGeometry/GG_Gear3D.h"
 
 using GenerativeGeometry::vec3;
 using std::vector;
