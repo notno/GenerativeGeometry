@@ -17,7 +17,8 @@ public:
 		return GetToothWidthUnit() * GetRadius();
 	}
 
-	
+	int GetRotFactor() const { return RotationFactor; };
+	void SetRotFactor(int f) { RotationFactor = f; };
 protected:
 	int RotationFactor = 1;
 	int NumTeeth;
