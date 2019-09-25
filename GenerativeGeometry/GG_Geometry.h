@@ -4,8 +4,8 @@
 #include <memory>
 
 /**
- * HACK ALERT: This macro business makes me uncomfortable, 
- * but makes it easy to test code in Unreal without 
+ * HACKY: This macro solution makes me uncomfortable,
+ * but makes it easy to test code in Unreal without
  * depending on Unreal's containers in non-Unreal contexts
  * (e.g. OpenFrameworks, TouchDesigner)
  * 

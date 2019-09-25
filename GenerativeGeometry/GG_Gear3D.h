@@ -9,12 +9,13 @@ namespace GenerativeGeometry {
 
 class Gear3D : public Gear {
 	static Gear3D* LastLink;
+	Gear3D* MyPreviousLink = nullptr;
 	double GearWidth = 30.0;
 	double DistanceFromPrevious = 500; // Mostly for testing
 public:
-	Gear3D() : Gear3D(V3(0)) {};
-	Gear3D(V3 center, double radius, int numTeeth, double width);
+	Gear3D();
 	Gear3D(V3 center);
+	Gear3D(V3 center, double radius, int numTeeth, double width);
 	void ThisIsFirstGear();
 	void NewGearFromCenter(V3 center);
 	double GetGearWidth() const { return GearWidth; };
@@ -26,26 +27,37 @@ protected:
 	virtual void MakeTriangleVertexIndices(int i) override;
 };
 
+Gear3D* Gear3D::LastLink = nullptr;
+
 Gear3D::Gear3D(V3 center, double radius, int numTeeth, double width = 30.0)
 	: Gear(center, radius, numTeeth), GearWidth(width)
 {
+	cout << "3 var called" << endl;
 	assert(radius > 0);
 
-	if (LastLink == nullptr) {
-		//cout << "FIRST GEAR" << endl;
+	MyPreviousLink = LastLink;
+	LastLink = this;
+
+	if (MyPreviousLink == nullptr) {
+		cout << "FIRST GEAR" << endl;
 		ThisIsFirstGear();
 	}
 	else 
 	{
-		//cout << "NOT FIRST GEAR. LastLink.Radius: " << LastLink->Radius << endl;
+		cout << "NOT FIRST GEAR. MyPrevLink->Radius: " << MyPreviousLink->Radius << endl;
 		NewGearFromCenter(center);
 	}
+
 };
 
 Gear3D::Gear3D(V3 center) : Gear3D(center, FIRST_GEAR_RADIUS, FIRST_GEAR_NUMTEETH) // Use placeholder values // TODO: fix
-{ };
+{
+	cout << "1 var called" << endl;
+};
 
-Gear3D* Gear3D::LastLink = nullptr;
+Gear3D::Gear3D() : Gear3D(V3(0)) {
+	cout << "0 var called" << endl;
+};
 
 void Gear3D::ThisIsFirstGear()
 {
@@ -62,39 +74,37 @@ void Gear3D::ThisIsFirstGear()
 	assert(OuterRadius >= Radius);
 	assert(Radius > 0);
 	assert(ToothWidth > 0);
-	
-	LastLink = this;
 }
 
 void Gear3D::NewGearFromCenter(V3 center)
 {
 	DistanceFromPrevious = ComputeDistanceFromPrevious(center);
 	if (abs(DistanceFromPrevious - 0) < 0.0001) { // Safeguard
-		//cout << "!!!!DistanceFromPrevious: " << DistanceFromPrevious << endl;
+		cout << "!!!!DistanceFromPrevious: " << DistanceFromPrevious << endl;
 		Radius = FIRST_GEAR_RADIUS;
-		ToothWidth = LastLink->ToothWidth;
+		ToothWidth = MyPreviousLink->ToothWidth;
 		OuterRadius = Radius + ToothWidth;
 	}
 	else 
 	{
-		OuterRadius = DistanceFromPrevious - LastLink->Radius;
-		ToothWidth = LastLink->ToothWidth; // Copy tooth width from last Gear
+		OuterRadius = DistanceFromPrevious - MyPreviousLink->Radius;
+		ToothWidth = MyPreviousLink->ToothWidth; // Copy tooth width from last Gear
 		Radius = OuterRadius - ToothWidth;
 	}
 	NumSpokes = 2.0 * pi * Radius / ToothWidth;
 	NumTeeth = NumSpokes / 2;
-	RotationFactor = -LastLink->RotationFactor;
+	RotationFactor = -MyPreviousLink->RotationFactor;
 
-	//cout << "DistanceFromPrevious: " << DistanceFromPrevious << " LastLink->Radius: " << LastLink->Radius << endl;
-	//cout << "OuterRadius: " << OuterRadius << " Radius: " << Radius << endl;
-	//cout << "ToothWidth: " << ToothWidth << "\n" << endl;
+	cout << "DistanceFromPrevious: " << DistanceFromPrevious << " MyPrevLink->Radius: " << MyPreviousLink->Radius << endl;
+	cout << "OuterRadius: " << OuterRadius << " Radius: " << Radius << endl;
+	cout << "ToothWidth: " << ToothWidth << "\n" << endl;
 	assert(Radius > 0);
 	assert(ToothWidth > 0);
 	assert(OuterRadius >= Radius);
 }
 
 double Gear3D::ComputeDistanceFromPrevious(V3 newCenter) const {
-	V3 oldCenter = LastLink->Center;
+	V3 oldCenter = MyPreviousLink->Center;
 	//cout << "xNEW: " << newCenter.X << " yNEW: " << newCenter.Y << " zNEW: " << newCenter.Z << endl;
 	//cout << "xOLD: " << oldCenter.X << " yOLD: " << oldCenter.Y << " zOLD: " << oldCenter.Z << endl;
 	
