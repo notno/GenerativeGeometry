@@ -1,49 +1,66 @@
 #pragma once
 #include "GG_Gear2D.h"
 #include <iostream>
+#include <memory>
 namespace GenerativeGeometry {
+	
+	const double FIRST_GEAR_RADIUS = 10.0;
+	const int FIRST_GEAR_NUMTEETH = 16;
 
 	class Gear3D : public Gear2D {
+	
+		static Gear3D* LastLink;
+		double GearWidth;
+		double DistanceFromPrevious; // Mostly for testing
 
 	public:
 		Gear3D(V3 center, double radius, int numTeeth, double width = 30.0) :
-			Gear2D(center, radius, numTeeth), GearWidth(width) 
-		{
-			if (LastGear != nullptr && abs(LastGear->RotationFactor) == 1) {
-				RotationFactor = -LastGear->RotationFactor;
-			}
-			else { //THIS IS THE FIRST GEAR
-				RotationFactor = 1;
-			}
+			Gear2D(center, radius, numTeeth), GearWidth(width) {
 		
-			LastGear = this;
+			ComputeParametersFromDistanceToPrevious(center); // Then set real values
+		};
+
+		Gear3D(V3 center) : Gear3D(center, FIRST_GEAR_RADIUS, FIRST_GEAR_NUMTEETH) {   // Use placeholder values // TODO: fix
 		};
 
 		double GetGearWidth() const {
 			return GearWidth;
 		};
 
-		Gear3D(V3 center) : Gear3D(center, ComputeRadius(), ComputeNumTeeth(16)) {
-			
-		};
-
-		double ComputeRadius() {
-			double n;
-			if (LastGear != nullptr && abs(LastGear->RotationFactor) == 1) {
-				n = LastGear->GetRadius() + 1.0;
+		void ComputeParametersFromDistanceToPrevious(V3 center) {
+			double dist;
+			if (LastLink != nullptr && abs(LastLink->GetRotationFactor()) == 1) {
+				dist = ComputeDistanceFromPrevious(center);
+				double outerRadius = dist - LastLink->GetRadius(); 
+				SetRadius(outerRadius - GetToothWidth());
+				SetNumSpokes(2.0 * pi * GetRadius() / GetToothWidth());
+				SetNumTeeth(GetNumSpokes() / 2);
+				SetToothWidthUnit(LastLink->GetToothWidthUnit()); // Copy tooth width from last Gear
+				SetRotationFactor(-LastLink->GetRotationFactor());
 			}
 			else { //THIS IS THE FIRST GEAR
-				n = 10.0;
+				SetRotationFactor(1);
+				dist = 0;
+				SetRadius(FIRST_GEAR_RADIUS);
+				SetToothWidthUnit(2 * pi / (2 * FIRST_GEAR_NUMTEETH));
 			}
-			return n;
+			LastLink = this;
+			DistanceFromPrevious = dist;
 		}
 
-		int ComputeNumTeeth(int n) {
-			return n;
+		double ComputeDistanceFromPrevious(V3 newCenter) const {
+			V3 oldCenter = LastLink->GetCenter();
+			double aSquared = pow(oldCenter.X - newCenter.X, 2.0);
+			double bSquared = pow(oldCenter.Y - newCenter.Y, 2.0);
+			double cSquared = pow(oldCenter.Z - newCenter.Z, 2.0);
+			return sqrt( aSquared + bSquared + cSquared );
+		};
+
+		double GetDistanceFromPrevious() const {
+			return DistanceFromPrevious;
 		}
+
 	protected:
-		double GearWidth;
-		static Gear3D* LastGear;
 
 		virtual void MakeVertices(int i) override
 		{
@@ -87,7 +104,7 @@ namespace GenerativeGeometry {
 				odd3 = even5,
 				odd4 = even8;
 
-			if (i < NumTeeth * 2) {
+			if (i < GetNumTeeth() * 2) {
 				if ((i & 1) == 1) { // Gear tooth
 					// Make gear face triangle for tooth
 					// Neighbor's outer vertex, Outer vertex
@@ -112,7 +129,7 @@ namespace GenerativeGeometry {
 					AddTri(odd1, odd4, odd2);
 				}
 			}
-			else if (i == NumTeeth * 2) {
+			else if (i == GetNumTeeth() * 2) {
 				// Last triangle face, clockwise, a gap
 				AddTri(0, 1, odd1);
 				// Make 2 tris for outer face of gap
@@ -123,6 +140,6 @@ namespace GenerativeGeometry {
 
 	};
 
-	Gear3D* Gear3D::LastGear = nullptr;
+	Gear3D* Gear3D::LastLink = nullptr;
 
 }; // namespace GenerativeGeometry

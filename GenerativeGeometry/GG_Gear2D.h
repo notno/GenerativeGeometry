@@ -1,32 +1,49 @@
 #pragma once
 #include "GG_Circle.h"
+#include <memory>
  
 namespace GenerativeGeometry {
 
-class Gear2D : public Circle {
-public:
-	Gear2D(V3 center, double radius, int numTeeth, double width = 30.0) : 
-		Circle(center, radius, numTeeth * 2), 
-		NumTeeth(numTeeth), ToothWidthUnit(SetToothWidthUnit(radius)) { };
+class Gear : public Circle {
 
-	void Generate() override { MakeTriangles(); }
+	int RotationFactor = 1;
+	int NumTeeth;
+	double ToothWidthUnit;
+
+public:
+	Gear(V3 center, double radius, int numTeeth) :
+		Circle(center, radius, numTeeth * 2),
+		NumTeeth(numTeeth), ToothWidthUnit(ComputeToothWidth_Unit()) {}
 
 	int GetNumTeeth() const { return NumTeeth; }; 
+	void SetNumTeeth(int nT) { NumTeeth = nT; };
 	double GetToothWidthUnit() const { return ToothWidthUnit; };
+	void SetToothWidthUnit(double tWU) { ToothWidthUnit = tWU; };
 	double GetToothWidth() const {
 		return GetToothWidthUnit() * GetRadius();
 	}
 
 	int GetRotationFactor() const { return RotationFactor; };
 	void SetRotationFactor(int f) { RotationFactor = f; };
-protected:
-	int RotationFactor = 1;
-	int NumTeeth;
-	double ToothWidthUnit;
 
-	double SetToothWidthUnit(double) const {
+protected:
+
+	double ComputeToothWidth_Unit() const {
 		return 2.0 * pi / (NumTeeth * 2.0);
 	};
+};
+
+
+
+
+class Gear2D : public Gear {
+public:
+	Gear2D(V3 center, double radius, int numTeeth) : 
+		Gear(center, radius, numTeeth) { };
+
+	void Generate() override { MakeTriangles(); }
+
+protected:
 
 	virtual void MakeVertices(int i) override
 	{
@@ -52,7 +69,7 @@ protected:
 
 	virtual void MakeTriangleVertexIndices(int i) override 
 	{
-		if (i < NumTeeth * 2) {
+		if (i < GetNumTeeth() * 2) {
 			if ((i & 1) == 1) { // Gear tooth
 				// Make gear face triangle for tooth
 				AddTri(2*(i+1)-1, 2*i-1, 0); 
@@ -63,7 +80,7 @@ protected:
 				AddTri(0, 2*(i+1), 2*i);
 			}
 		}
-		else if (i == NumTeeth * 2) {
+		else if (i == GetNumTeeth() * 2) {
 			// Last triangle face, clockwise, a gap
 			AddTri(0, 2, 2*i);
 		}

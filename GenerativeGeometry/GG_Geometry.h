@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 /**
  * HACK ALERT: This macro business makes me uncomfortable, 
@@ -28,6 +29,8 @@
 
 namespace GenerativeGeometry {
 
+	using std::cout;
+	using std::endl;
 const double pi = 3.14159265358979323846;
 
 struct vec2 {  
@@ -55,9 +58,10 @@ public:
 	Geometry() : Center(V3(0.0,0.0,0.0)) {};
 	Geometry(V3 center) : Center(center) {};
 
-	V3 GetCenter() {
+	V3 GetCenter() const {
 		return Center;
 	}
 };
+
 
 } // namespace GenerativeGeometry

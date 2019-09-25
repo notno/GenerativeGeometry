@@ -11,23 +11,21 @@ class Circle : public Geometry {
 	double Radius; 
 
 public:
-	Circle() : Geometry(V3(0,0,0)),NumSpokes(16), Radius(10) {};
-
+	Circle() : Geometry(V3(0,0,0)),NumSpokes(0), Radius(0) {};
 	Circle(V3 center, double radius, int edges) : Geometry(center), Radius(radius), NumSpokes(edges) {};
 
 	virtual void Generate() override { MakeTriangles(); };
 
 	double GetRadius() const { return Radius; }
+	void SetRadius(double r) { Radius = r; }
 	int GetTriangleAt(int i) const { return TriangleVertIndices[i]; }
 	V3 GetVertexAt(int i) const { return Vertices[i]; }
 	V3 GetNormalAt(int i) const { return Normals[i]; }
 	int GetNumSpokes() const { return NumSpokes; };
+	void SetNumSpokes(int nS) { NumSpokes = nS; };
 	int GetNumVerts() const { return Vertices.NUM(); };
 	int GetNumNormals() const { return Normals.NUM(); };
 	int GetNumTriangleVertIndices() const { return TriangleVertIndices.NUM(); };
-	double GetDistanceFromPrevious() const {
-		return 0.0;
-	}
 
 	VEC<int> GetTriangleVerts() const { return TriangleVertIndices; };
 	VEC<V3> GetVertices() const { return Vertices; };
