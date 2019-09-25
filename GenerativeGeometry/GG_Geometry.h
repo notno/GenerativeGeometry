@@ -40,7 +40,8 @@ struct vec2 {
 struct vec3 { 
 	double X, Y, Z; 
 	vec3(double X, double Y, double Z) : X(X), Y(Y), Z(Z) {};
-	vec3() : X(0.0), Y(0.0), Z(0.0) {};
+	vec3() : vec3(0.0, 0.0, 0.0) {};
+	vec3(double val) : vec3(val, val, val) {};
 };
 struct vec4 { 
 	double r, g, b, a; 
@@ -49,7 +50,6 @@ struct vec4 {
 
 class Geometry {
 
-	V3 Center;
 
 public:
 	virtual void MakeTriangles() = 0;
@@ -61,6 +61,8 @@ public:
 	V3 GetCenter() const {
 		return Center;
 	}
+protected:
+	V3 Center;
 };
 
 

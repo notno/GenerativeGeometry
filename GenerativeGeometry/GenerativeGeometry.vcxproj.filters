@@ -26,5 +26,8 @@
     <ClInclude Include="GG_Gear3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GG_Gear.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

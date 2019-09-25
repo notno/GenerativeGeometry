@@ -1,62 +1,28 @@
 #pragma once
-#include "GG_Circle.h"
+#include "GG_Gear.h"
 #include <memory>
  
 namespace GenerativeGeometry {
-
-class Gear : public Circle {
-
-	int RotationFactor = 1;
-	int NumTeeth;
-	double ToothWidthUnit;
-
-public:
-	Gear(V3 center, double radius, int numTeeth) :
-		Circle(center, radius, numTeeth * 2),
-		NumTeeth(numTeeth), ToothWidthUnit(ComputeToothWidth_Unit()) {}
-
-	int GetNumTeeth() const { return NumTeeth; }; 
-	void SetNumTeeth(int nT) { NumTeeth = nT; };
-	double GetToothWidthUnit() const { return ToothWidthUnit; };
-	void SetToothWidthUnit(double tWU) { ToothWidthUnit = tWU; };
-	double GetToothWidth() const {
-		return GetToothWidthUnit() * GetRadius();
-	}
-
-	int GetRotationFactor() const { return RotationFactor; };
-	void SetRotationFactor(int f) { RotationFactor = f; };
-
-protected:
-
-	double ComputeToothWidth_Unit() const {
-		return 2.0 * pi / (NumTeeth * 2.0);
-	};
-};
-
-
-
 
 class Gear2D : public Gear {
 public:
 	Gear2D(V3 center, double radius, int numTeeth) : 
 		Gear(center, radius, numTeeth) { };
 
-	void Generate() override { MakeTriangles(); }
 
 protected:
 
 	virtual void MakeVertices(int i) override
 	{
 		auto center = GetCenter();
-		auto radius = GetRadius();
-		auto outerRadius = radius + GetToothWidth();
+		auto outerRadius = GetRadius() + GetToothWidth();
 
 		double theta = GetThetaAtIthSpoke(i - 1);
 		double cT = cos(theta);
 		double sT = sin(theta);
 
 		// Create vertices for front of gear
-		Vertices.PUSH(V3(0 + center.X, radius * cT, radius * sT));
+		Vertices.PUSH(V3(0 + center.X, Radius * cT, Radius * sT));
 		Vertices.PUSH(V3(0 + center.X, outerRadius * cT, outerRadius * sT));
 	}
 

@@ -57,7 +57,7 @@ TEST(Circle, ShouldHaveRightNumberOfVerts) {
 	circle.Generate();
 	EXPECT_EQ(circle.GetNumVerts(), 33);
 }
-
+ 
 
 
 TEST(Gear2D, ShouldHaveRightNumberOfTeeth) {
@@ -86,7 +86,7 @@ TEST(Gear2D, ShouldHaveRightNumberOfVertices) {
 }
 
 TEST(Gear2D, ShouldGetRightNumberOfVertsPublicly) {
-	auto gear = GenerativeGeometry::Gear2D(vec3( 0.0,0.0,0.0 ), 10, 16);
+	auto gear = GenerativeGeometry::Gear2D(vec3( 0.0,.0,0.0 ), 10, 16);
 	gear.Generate();
 	EXPECT_EQ(gear.GetVertices().size(), 65);
 }
@@ -106,34 +106,56 @@ TEST(Gear2D, ShouldHaveRightNumberOfTriangleVertices) {
 	EXPECT_EQ(gear.GetNumTriangleVertIndices(), 96);
 }
 
+class Gear3DTest : public ::testing::Test, public GenerativeGeometry::Gear3D {
+protected:
+	Gear3DTest() {};
+	void SetUp() override{
+		gear0 = GenerativeGeometry::Gear3D(vec3());
+		gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 1000.0, 10.0));
+		gear2 = GenerativeGeometry::Gear3D(vec3(0.0, 2200.0, 20.0));
+		gear2.Generate();
+		gear3 = GenerativeGeometry::Gear3D(vec3(0.0, 2700.0, 20.0));
+		gear4 = GenerativeGeometry::Gear3D(vec3(0.0, 3000.0, 30.0));
+		gear5 = GenerativeGeometry::Gear3D(vec3(0.0, 4000.0, 40.0));
+		gear6 = GenerativeGeometry::Gear3D(vec3(0.0, 5500.0, 50.0));
+	}
+	GenerativeGeometry::Gear3D gear0; 
+	GenerativeGeometry::Gear3D gear1; 
+	GenerativeGeometry::Gear3D gear2; 
+	GenerativeGeometry::Gear3D gear3;
+	GenerativeGeometry::Gear3D gear4;
+	GenerativeGeometry::Gear3D gear5;
+	GenerativeGeometry::Gear3D gear6;
+};
 
-TEST(Gear3D, ShouldSetFirstGearRadiusAutomatically) {
-	auto gear = GenerativeGeometry::Gear3D(vec3());
-	EXPECT_EQ(gear.GetRadius(), 10.0);
+
+TEST_F(Gear3DTest, ShouldSetFirstGearRadiusAutomatically) {
+	EXPECT_EQ(gear0.GetRadius(), 100.0);
 }
 
-TEST(Gear3D, ShouldComputeDistanceFromPrevious) {
-	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0));
-	auto gear2 = GenerativeGeometry::Gear3D(vec3(0.0, 10.0, 1.0));
-	auto gear3 = GenerativeGeometry::Gear3D(vec3(0.0, 20.0, 2.0));
-	EXPECT_FLOAT_EQ(gear2.GetDistanceFromPrevious(), sqrt(101));
-	EXPECT_FLOAT_EQ(gear3.GetDistanceFromPrevious(), sqrt(101));
+TEST_F(Gear3DTest, ShouldHaveRightNumberOfTriangleVertices) {
+	// Tooth zone = 7 triangles = 21 vertices
+	// Gap zone = 3 triangles
+	EXPECT_EQ(gear2.GetNumTriangleVertIndices(), 21 * 16 + 9 * 16);
 }
 
-TEST(Gear3D, ShouldComputeRadiusFromDistanceToPrevious) {
-	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0));
-	auto gear2 = GenerativeGeometry::Gear3D(vec3(0.0, 10.0, 1.0));
-	auto gear3 = GenerativeGeometry::Gear3D(vec3(0.0, 20.0, 2.0));
-	EXPECT_EQ(gear2.GetRadius(), (sqrt(101) - 10) - (2*pi*10/32)) ;
+TEST_F(Gear3DTest, ShouldComputeDistanceFromPrevious) {	
+	EXPECT_FLOAT_EQ(gear2.GetDistanceFromPrevious(), 1000.0005);
+	EXPECT_FLOAT_EQ(gear3.GetDistanceFromPrevious(), 2000.001);
 }
 
-TEST(GearsInAChain, ShouldAlternateRotationFactor) {
-	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	auto gear2 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	auto gear3 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	auto gear4 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	auto gear5 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	auto gear6 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
+TEST_F(Gear3DTest, ShouldComputeParamsFromDistanceToPrevious) {
+	double tW = (2 * pi * 100 / 32);
+	cout << tW << endl;
+	double outerRadius2 = sqrt(101) - 10;
+	cout << outerRadius2 << endl;
+	double radius2 = outerRadius2 - tW;
+	cout << radius2 << endl;
+	EXPECT_EQ(gear2.GetToothWidth(), tW);
+	EXPECT_EQ(gear2.GetRadius(), radius2);
+}
+
+TEST_F(Gear3DTest, ShouldAlternateRotationFactor) {
 	int a = gear1.GetRotationFactor();
 	EXPECT_EQ(gear2.GetRotationFactor(), -a);
 	EXPECT_EQ(gear3.GetRotationFactor(), a);
@@ -142,24 +164,10 @@ TEST(GearsInAChain, ShouldAlternateRotationFactor) {
 	EXPECT_EQ(gear6.GetRotationFactor(), -a);
 }
 
-TEST(Gear3D, ShouldHaveRightNumberOfTriangleVertices) {
-	auto gear = GenerativeGeometry::Gear3D(vec3( 0.0,0.0,0.0 ), 10, 16);
-	gear.Generate();
-	// Tooth zone = 7 triangles = 21 vertices
-	// Gap zone = 3 triangles
-	EXPECT_EQ(gear.GetNumTriangleVertIndices(), 21*16 + 9*16);
+TEST_F(Gear3DTest, ShouldHaveSameToothWidth) {
+	EXPECT_EQ(gear1.GetToothWidth(), gear2.GetToothWidth());
 }
 
-
-TEST(GearsInAChain, ShouldHaveRadiusRelatedToDistance) {
-	auto gear1 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	auto gear2 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-	auto gear3 = GenerativeGeometry::Gear3D(vec3(0.0, 0.0, 0.0), 10, 16);
-}
-
-TEST(GearsInAChain, ShouldHaveSameToothWidth) {
-
-}
 //Circle, ShouldHaveMoreThanTwoEdges
 //Gear2D, ShouldHaveMoreThanOneTeeth
 //Gear3D, ShouldHaveMoreThanOneTeeth

@@ -3,21 +3,17 @@
 
 namespace GenerativeGeometry {
 
-using std::vector;
+const double FIRST_GEAR_RADIUS = 100.0;
+const int FIRST_GEAR_NUMTEETH = 16;
 
 class Circle : public Geometry { 
-
-	int NumSpokes;
-	double Radius; 
-
 public:
 	Circle() : Geometry(V3(0,0,0)),NumSpokes(0), Radius(0) {};
 	Circle(V3 center, double radius, int edges) : Geometry(center), Radius(radius), NumSpokes(edges) {};
 
 	virtual void Generate() override { MakeTriangles(); };
 
-	double GetRadius() const { return Radius; }
-	void SetRadius(double r) { Radius = r; }
+	// Getters & Setters mostly for testing
 	int GetTriangleAt(int i) const { return TriangleVertIndices[i]; }
 	V3 GetVertexAt(int i) const { return Vertices[i]; }
 	V3 GetNormalAt(int i) const { return Normals[i]; }
@@ -26,12 +22,16 @@ public:
 	int GetNumVerts() const { return Vertices.NUM(); };
 	int GetNumNormals() const { return Normals.NUM(); };
 	int GetNumTriangleVertIndices() const { return TriangleVertIndices.NUM(); };
+	double GetRadius() const { return Radius; }
+	void SetRadius(double val) { Radius = val; }
 
 	VEC<int> GetTriangleVerts() const { return TriangleVertIndices; };
 	VEC<V3> GetVertices() const { return Vertices; };
 	VEC<V3> GetNormals() const { return Normals; };
 
 protected:
+	double Radius = FIRST_GEAR_RADIUS; 
+	int NumSpokes = FIRST_GEAR_NUMTEETH*2;
 
 	VEC<int> TriangleVertIndices;
 	VEC<V3> Vertices;
