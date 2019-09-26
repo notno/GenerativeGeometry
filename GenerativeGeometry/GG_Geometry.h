@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <iostream>
 
 /**
  * HACKY: This macro solution makes me uncomfortable,

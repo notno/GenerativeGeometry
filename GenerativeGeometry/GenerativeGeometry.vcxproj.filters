@@ -30,4 +30,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GG_Gear3D.cpp" />
+  </ItemGroup>
 </Project>
