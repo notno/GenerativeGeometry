@@ -7,7 +7,7 @@ namespace GenerativeGeometry {
 class Gear : public Circle {
 
 public:
-	Gear(V3 center, double radius, int numTeeth) :
+	Gear(V3  center, double radius, int numTeeth) :
 		Circle(center, radius, numTeeth * 2),
 		NumTeeth(numTeeth), ToothWidth_Unit(ComputeToothWidth_Unit()) {}
 	void Generate() override { MakeTriangles(); }

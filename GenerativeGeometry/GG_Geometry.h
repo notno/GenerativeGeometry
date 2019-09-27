@@ -20,6 +20,11 @@
 #define VEC TArray
 #define NUM Num
 #define PUSH Add
+//#elif __SOP_CPlusPlusBase__
+//#define V3 GG_Position
+//#define VEC 
+//#define NUM
+//#define PUSH
 #else
 #define V3 vec3
 #define VEC std::vector

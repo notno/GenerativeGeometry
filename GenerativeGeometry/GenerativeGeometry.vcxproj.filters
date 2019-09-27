@@ -29,12 +29,8 @@
     <ClInclude Include="GG_Gear.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GG_Chain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GG_Gear3D.cpp" />
-    <ClCompile Include="GG_Chain.cpp" />
   </ItemGroup>
 </Project>

@@ -18,11 +18,11 @@ GenerativeGeometry::Gear3D::Gear3D(V3 center, double radius, int numTeeth, Gear3
 };
 
 // Use placeholder values // TODO: fix 
-GenerativeGeometry::Gear3D::Gear3D(V3 center, Gear3D* previous) : Gear3D(center, FIRST_GEAR_RADIUS, FIRST_GEAR_NUMTEETH, previous)
+GenerativeGeometry::Gear3D::Gear3D(V3 center, Gear3D* previous) : Gear3D(center, FIRST_GEAR_RADIUS, FIRST_GEAR_NUMTEETH, previous, 30)
 {};
 
 // Default initializer with no args just for Google Test
-GenerativeGeometry::Gear3D::Gear3D() : Gear3D( V3(0), nullptr ) {};
+GenerativeGeometry::Gear3D::Gear3D() : Gear3D( V3(0), nullptr  ) {};
 
 void GenerativeGeometry::Gear3D::ThisIsFirstGear()
 {

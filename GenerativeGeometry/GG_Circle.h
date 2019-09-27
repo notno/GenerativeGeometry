@@ -14,7 +14,7 @@ public:
 	virtual void Generate() override { MakeTriangles(); };
 
 	// Getters & Setters mostly for testing
-	int GetTriangleAt(int i) const { return TriangleVertIndices[i]; }
+	int GetTriangleVertIndexAt(int i) const { return TriangleVertIndices[i]; }
 	V3 GetVertexAt(int i) const { return Vertices[i]; }
 	V3 GetNormalAt(int i) const { return Normals[i]; }
 	int GetNumSpokes() const { return NumSpokes; };
@@ -25,7 +25,7 @@ public:
 	double GetRadius() const { return Radius; }
 	void SetRadius(double val) { Radius = val; }
 
-	VEC<int> GetTriangleVerts() const { return TriangleVertIndices; };
+	VEC<int> GetTriangleVertexIndices() const { return TriangleVertIndices; };
 	VEC<V3> GetVertices() const { return Vertices; };
 	VEC<V3> GetNormals() const { return Normals; };
 

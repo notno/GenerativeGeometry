@@ -37,10 +37,10 @@ TEST(Circle, ShouldMakeGoodVertices) {
 TEST(Circle, ShouldMakeGoodTriangles) {
 	auto circle = Circle(vec3( 0.0,0.0,0.0 ), 10.0, 16);
 	circle.Generate();
-	EXPECT_EQ(circle.GetTriangleAt(0),2);
-	EXPECT_EQ(circle.GetTriangleAt(1),1);
-	EXPECT_EQ(circle.GetTriangleAt(2),0);
-	EXPECT_EQ(circle.GetTriangleAt(16*3-2),16);
+	EXPECT_EQ(circle.GetTriangleVertIndexAt(0),2);
+	EXPECT_EQ(circle.GetTriangleVertIndexAt(1),1);
+	EXPECT_EQ(circle.GetTriangleVertIndexAt(2),0);
+	EXPECT_EQ(circle.GetTriangleVertIndexAt(16*3-2),16);
 }
 TEST(Circle, ShouldMakePredictableNormals) {
 	auto circle = Circle(vec3( 1.0,9.0,3.0 ), 1320.0, 32);
