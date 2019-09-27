@@ -1,36 +1,28 @@
 #include "GG_Gear3D.h"
 
-GenerativeGeometry::Gear3D* GenerativeGeometry::Gear3D::LastLink = nullptr;
-
-GenerativeGeometry::Gear3D::Gear3D(V3 center, double radius, int numTeeth, double width = 30.0)
-	: Gear(center, radius, numTeeth), GearWidth(width)
+GenerativeGeometry::Gear3D::Gear3D(V3 center, double radius, int numTeeth, Gear3D* previous, double width = 30.0)
+	: Gear(center, radius, numTeeth), GearWidth(width), MyPreviousLink(previous)
 {
-	cout << "3 var called" << endl;
 	assert(radius > 0);
 
-	MyPreviousLink = LastLink;
-	LastLink = this;
-
 	if (MyPreviousLink == nullptr) {
-		cout << "!!! FIRST GEAR !!!" << endl;
+
+		cout << "FIRST" << endl;
 		ThisIsFirstGear();
 	}
-	else
-	{
-		cout << "NOT FIRST GEAR. MyPrevLink->Radius: " << MyPreviousLink->Radius << endl;
+	else {
+
+		cout << "NOT FIRST" << endl;
 		NewGearFromCenter(center);
 	}
-
 };
 
-GenerativeGeometry::Gear3D::Gear3D(V3 center) : Gear3D(center, FIRST_GEAR_RADIUS, FIRST_GEAR_NUMTEETH) // Use placeholder values // TODO: fix
-{
-	cout << "1 var called" << endl;
-};
+// Use placeholder values // TODO: fix 
+GenerativeGeometry::Gear3D::Gear3D(V3 center, Gear3D* previous) : Gear3D(center, FIRST_GEAR_RADIUS, FIRST_GEAR_NUMTEETH, previous)
+{};
 
-GenerativeGeometry::Gear3D::Gear3D() : Gear3D(V3(0)) {
-	cout << "0 var called" << endl;
-};
+// Default initializer with no args just for Google Test
+GenerativeGeometry::Gear3D::Gear3D() : Gear3D( V3(0), nullptr ) {};
 
 void GenerativeGeometry::Gear3D::ThisIsFirstGear()
 {
@@ -53,7 +45,6 @@ void GenerativeGeometry::Gear3D::NewGearFromCenter(V3 center)
 {
 	DistanceFromPrevious = ComputeDistanceFromPrevious(center);
 	if (abs(DistanceFromPrevious - 0) < 0.0001) { // Safeguard
-		cout << "!!!!DistanceFromPrevious: " << DistanceFromPrevious << endl;
 		Radius = FIRST_GEAR_RADIUS;
 		ToothWidth = MyPreviousLink->ToothWidth;
 		OuterRadius = Radius + ToothWidth;
@@ -68,9 +59,6 @@ void GenerativeGeometry::Gear3D::NewGearFromCenter(V3 center)
 	NumTeeth = NumSpokes / 2;
 	RotationFactor = -MyPreviousLink->RotationFactor;
 
-	cout << "DistanceFromPrevious: " << DistanceFromPrevious << " MyPrevLink->Radius: " << MyPreviousLink->Radius << endl;
-	cout << "OuterRadius: " << OuterRadius << " Radius: " << Radius << endl;
-	cout << "ToothWidth: " << ToothWidth << "\n" << endl;
 	assert(Radius > 0);
 	assert(ToothWidth > 0);
 	assert(OuterRadius >= Radius);
@@ -78,13 +66,11 @@ void GenerativeGeometry::Gear3D::NewGearFromCenter(V3 center)
 
 double GenerativeGeometry::Gear3D::ComputeDistanceFromPrevious(V3 newCenter) const {
 	V3 oldCenter = MyPreviousLink->Center;
-	//cout << "xNEW: " << newCenter.X << " yNEW: " << newCenter.Y << " zNEW: " << newCenter.Z << endl;
-	//cout << "xOLD: " << oldCenter.X << " yOLD: " << oldCenter.Y << " zOLD: " << oldCenter.Z << endl;
 
 	double aSquared = pow(oldCenter.X - newCenter.X, 2.0);
 	double bSquared = pow(oldCenter.Y - newCenter.Y, 2.0);
 	double cSquared = pow(oldCenter.Z - newCenter.Z, 2.0);
-	//cout << "a2: " << aSquared << " b2: " << bSquared << " c2: " << cSquared << endl;
+
 	return sqrt(aSquared + bSquared + cSquared);
 };
 

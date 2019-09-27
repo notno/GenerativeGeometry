@@ -87,6 +87,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,6 +124,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="GG_Chain.h" />
     <ClInclude Include="GG_Gear.h" />
     <ClInclude Include="GG_Circle.h" />
     <ClInclude Include="GG_Gear2D.h" />
@@ -131,6 +133,7 @@
     <ClInclude Include="GG_Math.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GG_Chain.cpp" />
     <ClCompile Include="GG_Gear3D.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
