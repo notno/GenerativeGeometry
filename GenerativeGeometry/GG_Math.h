@@ -31,6 +31,14 @@ namespace GenerativeGeometry {
 		static double RandNormalized() {
 			return RandRangeReal(0, 1);
 		}
+
+		template<typename T>
+		static double Distance(const T& p1, const T& p2) {
+			double aSquared = pow(p2.X - p1.X, 2.0);
+			double bSquared = pow(p2.Y - p1.Y, 2.0);
+			double cSquared = pow(p2.Z - p1.Z, 2.0);
+			return sqrt(aSquared + bSquared + cSquared);
+		}
 	};
 
 } // GenerativeGeometry namespace

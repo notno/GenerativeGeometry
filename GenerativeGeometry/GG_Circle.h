@@ -3,11 +3,12 @@
 
 namespace GenerativeGeometry {
 
-const double FIRST_GEAR_RADIUS = 100.0;
-const int FIRST_GEAR_NUMTEETH = 16;
+const double DEFAULT_RADIUS = 100.0;
+const int DEFAULT_NUMSPOKES = 16;
 
 class Circle : public Geometry { 
 public:
+	virtual ~Circle() = default;
 	Circle() : Geometry(V3(0,0,0)),NumSpokes(0), Radius(0) {};
 	Circle(V3 center, double radius, int edges) : Geometry(center), Radius(radius), NumSpokes(edges) {};
 
@@ -30,8 +31,8 @@ public:
 	VEC<V3> GetNormals() const { return Normals; };
 
 protected:
-	double Radius = FIRST_GEAR_RADIUS; 
-	int NumSpokes = FIRST_GEAR_NUMTEETH*2;
+	double Radius = DEFAULT_RADIUS; 
+	int NumSpokes = DEFAULT_NUMSPOKES;
 
 	VEC<int> TriangleVertIndices;
 	VEC<V3> Vertices;
@@ -49,7 +50,6 @@ protected:
 		TriangleVertIndices.PUSH(b);
 		TriangleVertIndices.PUSH(c);
 	}
-
 
 	void MakeTriangles() override {
 		Vertices.PUSH(GetCenter());
@@ -90,7 +90,6 @@ protected:
 		// Create vertices for front of circle
 		Vertices.PUSH(V3(0 + c.X, Radius * cT + c.Y, Radius * sT + c.Z));
 	}
-
 };
 
 

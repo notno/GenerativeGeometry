@@ -8,11 +8,11 @@
 #include "../GenerativeGeometry/GG_Gear2D.h"
 #include "../GenerativeGeometry/GG_Gear3D.h"
 
-namespace GenerativeGeometry {
 using std::vector;
 using std::cout;
 using std::endl;
 
+namespace GenerativeGeometry {
 
 TEST(RandRangeInt, ProbablyDoesntProduceBadResults) {
   EXPECT_LT(Math::RandRangeInt(20,30), 31);
@@ -107,13 +107,17 @@ class Gear3DTest : public ::testing::Test, public Gear3D  {
 protected:
 	Gear3DTest() { 	};
 	void SetUp() override{
-		gear0 = Gear3D(vec3(0.0, 0.0, 0.0), nullptr);
-		gear1 = Gear3D(vec3(0.0, 1000.0, 10.0), &gear0);
-		gear2 = Gear3D(vec3(0.0, 2200.0, 20.0), &gear1);
-		gear3 = Gear3D(vec3(0.0, 2700.0, 20.0), &gear2);
-		gear4 = Gear3D(vec3(0.0, 3000.0, 30.0), &gear3);
-		gear5 = Gear3D(vec3(0.0, 4000.0, 40.0), &gear4);
-		gear6 = Gear3D(vec3(0.0, 5500.0, 50.0), &gear5);
+		
+		gear0 = Gear3D(vec3(0.0, 0.0, 0.0), 100.0, 16, 30.0, 1);
+		
+		auto gf = Gear3D::Factory;
+
+		gear1 = gf.GearFromPrevious(vec3(0.0, 1000.0, 10.0), gear0);
+		gear2 = gf.GearFromPrevious(vec3(0.0, 2200.0, 20.0), gear1);
+		gear3 = gf.GearFromPrevious(vec3(0.0, 2700.0, 20.0), gear2);
+		gear4 = gf.GearFromPrevious(vec3(0.0, 3000.0, 30.0), gear3);
+		gear5 = gf.GearFromPrevious(vec3(0.0, 4000.0, 40.0), gear4);
+		gear6 = gf.GearFromPrevious(vec3(0.0, 5500.0, 50.0), gear5);
 		gear1.Generate();
 		gear2.Generate();
 	}
@@ -126,14 +130,10 @@ protected:
 	Gear3D gear6;
 };
 
-/**
- * Because we're using a static pointer on Gear3D class, GTest seems to lose pointers.
- * So we shove all the tests into one TEST_F.
- */
+
 TEST_F(Gear3DTest, ShouldSetFirstGearRadiusTo100) {
 	EXPECT_EQ(gear0.GetRadius(), 100.0);
 }
-
 
 TEST_F(Gear3DTest, ShouldHaveRightNumberOfTriangleVertices) {
 
@@ -147,15 +147,23 @@ TEST_F(Gear3DTest, ShouldHaveRightNumberOfTriangleVertices) {
 
 TEST_F(Gear3DTest, ShouldComputeDistanceFromPrevious) {
 
-	EXPECT_FLOAT_EQ(gear1.GetDistanceFromPrevious(), 1000.04999875);
-	EXPECT_FLOAT_EQ(gear2.GetDistanceFromPrevious(), 1200.041665943);
-	EXPECT_FLOAT_EQ(gear3.GetDistanceFromPrevious(), 500.0);
-	EXPECT_FLOAT_EQ(gear4.GetDistanceFromPrevious(), 300.1666203961);
+	auto g0g1 = Math::Distance<vec3>(gear0.GetCenter(), gear1.GetCenter());
+	EXPECT_FLOAT_EQ(g0g1, 1000.04999875);
+
+	auto g1g2 = Math::Distance<vec3>(gear1.GetCenter(), gear2.GetCenter());
+	EXPECT_FLOAT_EQ(g1g2, 1200.041665943);
+
+	auto g2g3 = Math::Distance<vec3>(gear2.GetCenter(), gear3.GetCenter());
+	EXPECT_FLOAT_EQ(g2g3, 500.0);
+	
+	auto g3g4 = Math::Distance<vec3>(gear3.GetCenter(), gear4.GetCenter());
+	EXPECT_FLOAT_EQ(g3g4, 300.1666203961);
 }
-//
-//	/** ShouldComputeParamsFromDistanceToPrevious */
-//
+
 TEST_F(Gear3DTest, ShouldAlternateRotationFactor) {
+
+	int x = gear0.GetRotationFactor();
+	EXPECT_EQ(gear1.GetRotationFactor(), -x);
 
 	int a = gear1.GetRotationFactor();
 	EXPECT_EQ(gear2.GetRotationFactor(), -a);
@@ -167,7 +175,12 @@ TEST_F(Gear3DTest, ShouldAlternateRotationFactor) {
 
 
 TEST_F(Gear3DTest, ShouldHaveSameToothWidth) {
-	EXPECT_EQ(gear1.GetToothWidth(), gear2.GetToothWidth());
+	EXPECT_FLOAT_EQ(gear0.GetToothWidth(), gear1.GetToothWidth());
+	EXPECT_FLOAT_EQ(gear1.GetToothWidth(), gear2.GetToothWidth());
+	EXPECT_FLOAT_EQ(gear2.GetToothWidth(), gear3.GetToothWidth());
+	EXPECT_FLOAT_EQ(gear3.GetToothWidth(), gear4.GetToothWidth());
+	EXPECT_FLOAT_EQ(gear4.GetToothWidth(), gear5.GetToothWidth());
+	EXPECT_FLOAT_EQ(gear5.GetToothWidth(), gear6.GetToothWidth());
 }
 
 

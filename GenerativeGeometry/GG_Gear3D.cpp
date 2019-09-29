@@ -1,78 +1,49 @@
 #include "GG_Gear3D.h"
 
-GenerativeGeometry::Gear3D::Gear3D(V3 center, double radius, int numTeeth, Gear3D* previous, double width = 30.0)
-	: Gear(center, radius, numTeeth), GearWidth(width), MyPreviousLink(previous)
+GenerativeGeometry::Gear3D GenerativeGeometry::Gear3D::Gear3DFactory::GearFromPrevious(V3 center, const Gear3D& previous) {
+	double distanceFromPrevious = Math::Distance<V3>(center, previous.Center);
+	if (distanceFromPrevious < previous.Radius) { throw("too close"); }
+
+	double outerRadius = distanceFromPrevious - previous.Radius;
+	double toothWidth = previous.ToothWidth; // Copy tooth width from last Gear
+	double radius = outerRadius - toothWidth;
+	double diameter = 2.0 * pi * radius;
+	int numSpokes = floor(diameter / toothWidth);
+	radius = numSpokes * toothWidth / (2.0 * pi); 
+	outerRadius = radius + toothWidth;
+	int numTeeth = numSpokes / 2;
+	int rotationFactor = -previous.RotationFactor;
+
+	return Gear3D(center, radius, outerRadius, numTeeth, toothWidth, rotationFactor, previous.Depth);
+}
+
+GenerativeGeometry::Gear3D::Gear3D(V3 center, double radius, double oR, int nT, double tW, int rF, double depth) : 
+	Gear(center,radius,oR,nT,tW,rF),
+	Depth(depth) 
 {
 	assert(radius > 0);
+	assert(OuterRadius >= Radius);
+	assert(ToothWidth > 0);
+}
 
-	if (MyPreviousLink == nullptr) {
 
-		cout << "FIRST" << endl;
-		ThisIsFirstGear();
-	}
-	else {
-
-		cout << "NOT FIRST" << endl;
-		NewGearFromCenter(center);
-	}
+GenerativeGeometry::Gear3D::Gear3D(V3 center, double radius, int numTeeth, double depth) :
+	Gear(center, radius, numTeeth), 
+	Depth(depth)
+{
+	assert(radius > 0);
+	assert(OuterRadius >= Radius);
+	assert(ToothWidth > 0);
 };
 
-// Use placeholder values // TODO: fix 
-GenerativeGeometry::Gear3D::Gear3D(V3 center, Gear3D* previous) : Gear3D(center, FIRST_GEAR_RADIUS, FIRST_GEAR_NUMTEETH, previous, 30)
-{};
+GenerativeGeometry::Gear3D::Gear3D(V3 center, double radius, int numTeeth, double depth, int rotation) :
+	Gear3D(center, radius, numTeeth, depth) 
+{
+	RotationFactor = rotation;
+};
 
 // Default initializer with no args just for Google Test
-GenerativeGeometry::Gear3D::Gear3D() : Gear3D( V3(0), nullptr  ) {};
-
-void GenerativeGeometry::Gear3D::ThisIsFirstGear()
-{
-	RotationFactor = 1;
-	DistanceFromPrevious = 0;
-
-	Radius = FIRST_GEAR_RADIUS;
-	ToothWidth_Unit = 2 * pi / (2 * FIRST_GEAR_NUMTEETH);
-	ToothWidth = ToothWidth_Unit * Radius;
-	OuterRadius = Radius + ToothWidth;
-	NumSpokes = 2.0 * pi * Radius / ToothWidth;
-	NumTeeth = NumSpokes / 2;
-
-	assert(OuterRadius >= Radius);
-	assert(Radius > 0);
-	assert(ToothWidth > 0);
-}
-
-void GenerativeGeometry::Gear3D::NewGearFromCenter(V3 center)
-{
-	DistanceFromPrevious = ComputeDistanceFromPrevious(center);
-	if (abs(DistanceFromPrevious - 0) < 0.0001) { // Safeguard
-		Radius = FIRST_GEAR_RADIUS;
-		ToothWidth = MyPreviousLink->ToothWidth;
-		OuterRadius = Radius + ToothWidth;
-	}
-	else
-	{
-		OuterRadius = DistanceFromPrevious - MyPreviousLink->Radius;
-		ToothWidth = MyPreviousLink->ToothWidth; // Copy tooth width from last Gear
-		Radius = OuterRadius - ToothWidth;
-	}
-	NumSpokes = 2.0 * pi * Radius / ToothWidth;
-	NumTeeth = NumSpokes / 2;
-	RotationFactor = -MyPreviousLink->RotationFactor;
-
-	assert(Radius > 0);
-	assert(ToothWidth > 0);
-	assert(OuterRadius >= Radius);
-}
-
-double GenerativeGeometry::Gear3D::ComputeDistanceFromPrevious(V3 newCenter) const {
-	V3 oldCenter = MyPreviousLink->Center;
-
-	double aSquared = pow(oldCenter.X - newCenter.X, 2.0);
-	double bSquared = pow(oldCenter.Y - newCenter.Y, 2.0);
-	double cSquared = pow(oldCenter.Z - newCenter.Z, 2.0);
-
-	return sqrt(aSquared + bSquared + cSquared);
-};
+GenerativeGeometry::Gear3D::Gear3D() : Gear3D( V3(0), DEFAULT_RADIUS, DEFAULT_NUMSPOKES/2, 30, 1) {};
 
 void GenerativeGeometry::Gear3D::MakeVertices(int i)
 {
@@ -84,8 +55,8 @@ void GenerativeGeometry::Gear3D::MakeVertices(int i)
 	Vertices.PUSH(V3(0 + Center.X, Radius * cT, Radius * sT));
 	Vertices.PUSH(V3(0 + Center.X, OuterRadius * cT, OuterRadius * sT));
 	// Create Vertices for back of gear
-	Vertices.PUSH(V3(-GearWidth, OuterRadius * cT, OuterRadius * sT));
-	Vertices.PUSH(V3(-GearWidth, Radius * cT, Radius * sT));
+	Vertices.PUSH(V3(-Depth, OuterRadius * cT, OuterRadius * sT));
+	Vertices.PUSH(V3(-Depth, Radius * cT, Radius * sT));
 }
 
 void GenerativeGeometry::Gear3D::MakeNormals()
@@ -113,7 +84,7 @@ void GenerativeGeometry::Gear3D::MakeTriangleVertexIndices(int i)
 		odd3 = even5,
 		odd4 = even8;
 
-	if (i < NumTeeth * 2) {
+	if (i < NumSpokes) {
 		if ((i & 1) == 1) { // Gear tooth
 			// Make gear face triangle for tooth
 			// Neighbor's outer vertex, Outer vertex
@@ -138,7 +109,7 @@ void GenerativeGeometry::Gear3D::MakeTriangleVertexIndices(int i)
 			AddTri(odd1, odd4, odd2);
 		}
 	}
-	else if (i == NumTeeth * 2) {
+	else if (i == NumSpokes) {
 		// Last triangle face, clockwise, a gap
 		AddTri(0, 1, odd1);
 		// Make 2 tris for outer face of gap

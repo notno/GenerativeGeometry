@@ -1,5 +1,6 @@
 #pragma once
 #include "GG_Gear.h"
+#include "GG_Math.h"
 #include <iostream>
 #include <vector>
 #include <assert.h>
@@ -7,26 +8,31 @@
 
 using std::vector;
 
-namespace GenerativeGeometry {
+namespace GenerativeGeometry { 
 
 class Gear3D : public Gear {
-	double GearWidth = 30.0;
-	double DistanceFromPrevious = 500; // Mostly for testing
+	double Depth;
 public:
-	Gear3D(V3 center, double radius, int numTeeth, Gear3D* previous , double width);
-	Gear3D(V3 center, Gear3D* previous);
+	Gear3D(V3 center, double radius, int numTeeth, double depth);
+	Gear3D(V3 center, double radius, int numTeeth, double depth, int rotation);
+	Gear3D(V3 center, double radius, double outerRadius, int numTeeth, double toothWidth, int rotationFactor, double depth);
 	Gear3D(); // Only for Google Test
-	void ThisIsFirstGear();
-	void NewGearFromCenter(V3 center);
-	double GetGearWidth() const { return GearWidth; };
-	double GetDistanceFromPrevious() const { return DistanceFromPrevious; };
-	double ComputeDistanceFromPrevious(V3 newCenter) const;
+	double GetDepth() const { 
+		return Depth; 
+	};
 
 protected:
-	Gear3D* MyPreviousLink = nullptr;
-	virtual void MakeVertices(int i) override;
-	virtual void MakeNormals() override;
-	virtual void MakeTriangleVertexIndices(int i) override;
+	void MakeVertices(int i) override;
+	void MakeNormals() override;
+	void MakeTriangleVertexIndices(int i) override;
+
+private:
+	class Gear3DFactory {
+	public:
+		static Gear3D GearFromPrevious(V3 center, const Gear3D& previous);
+	};
+public: 
+	static Gear3DFactory Factory;
 };
 
 }; // namespace GenerativeGeometry

@@ -61,6 +61,7 @@ public:
 	virtual void MakeTriangles() = 0;
 	virtual void Generate() = 0;
 
+	virtual ~Geometry() = default;
 	Geometry() : Center(V3(0.0,0.0,0.0)) {};
 	Geometry(V3 center) : Center(center) {};
 
